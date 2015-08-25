@@ -1,20 +1,20 @@
-package gmws
+package mws
+
+import (
+	. "../gmws"
+	. "../http_client"
+)
 
 type Products struct {
 	*MwsBase
 }
 
 // sellerId, authToken, region string
-func NewProductsClient(config map[string]string) *MwsClient {
-	base := NewMwsBase(config)
-	return &Products{MwsBase: base}
-}
-
-func (p Products) paramsToAugment(action string) map[string]string {
-	params := p.MwsBase.paramsToAugment()
-	params["Version"] = p.Version()
-	params["Action"] = action
-	return params
+func NewProductsClient(config MwsConfig) MwsClient {
+	prodcuts := new(Products)
+	base := NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
+	prodcuts.MwsBase = base
+	return prodcuts
 }
 
 func (p Products) Version() string {
@@ -25,22 +25,14 @@ func (p Products) Name() string {
 	return "Products"
 }
 
-func (p Products) Path() string {
-	return "/" + p.Name() + "/" + p.Version()
-}
+func (p Products) GetMatchingProductForId(idType string, idList []string) (string, error) {
+	params := Parameters{
+		"Action": "GetMatchingProductForId",
+		"IdType": idType,
+		"IdList": idList,
+	}
+	structedParams, err := params.StructureKeys("IdList", "Id").ToNormalizedParameters()
 
-func (p Products) Endpoint() string {
-	return p.Host + "/" + p.Path()
-}
-
-func (p Products) GetMatchingProductForId(idType string, idList []string) string {
-	action := "GetMatchingProductForId"
-	params := Parameters{"IdType": idType, "IdList": idList}
-	structedParams := params.StructureKeys("IdList", "Id").ToNormalizedParameters()
-
-	paramsToAugment := p.paramsToAugment(action)
-	httpClient := newHttpClient(p.Endpoint(), structedParams)
-	httpClient.AugmentParameters(paramsToAugment)
-	httpClient.SignQuery(p.getCredential())
-	return httpClient.Request()
+	httpClient := p.HttpClient(structedParams)
+	return httpClient.Request(), err
 }

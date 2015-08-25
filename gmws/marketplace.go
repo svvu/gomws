@@ -1,5 +1,9 @@
 package gmws
 
+import (
+	"fmt"
+)
+
 var EndPoints = map[string]string{
 	"A2EUQ1WTGCTBG2": "https://mws.amazonservices.ca",
 	"ATVPDKIKX0DER":  "https://mws.amazonservices.com ",
@@ -41,13 +45,17 @@ type MarketPlace struct {
 	EndPoint string
 }
 
-func NewMarketPlace(region string) (*MarketPlace, error) {
-	mp := MarketPlace{region: region}
-	if marketPlaceId, idError := mp.MarketPlaceId(); idError != nil {
+func NewMarketPlace(region string) (MarketPlace, error) {
+	mp := MarketPlace{Region: region}
+
+	marketPlaceId, idError := mp.MarketPlaceId()
+	if idError != nil {
 		return mp, idError
 	}
 	mp.Id = marketPlaceId
-	if endPoint, endPointError := mp.MarketPlaceEndPoint(); endPointError != nil {
+
+	endPoint, endPointError := mp.MarketPlaceEndPoint()
+	if endPointError != nil {
 		return mp, endPointError
 	}
 	mp.EndPoint = endPoint
@@ -56,24 +64,24 @@ func NewMarketPlace(region string) (*MarketPlace, error) {
 
 // Endpoint get the MWS end point for the region
 func (mp *MarketPlace) MarketPlaceEndPoint() (string, error) {
-	if mp.EndPoint != nil {
+	if mp.EndPoint != "" {
 		return mp.EndPoint, nil
 	}
 	if val, ok := EndPoints[mp.Id]; ok {
 		return val, nil
 	}
-	return nil, MarketplaceError{"marketplace id", mp.Id}
+	return "", MarketplaceError{"marketplace id", mp.Id}
 }
 
 // MarketPlaceID get the marketpalce id for the region
 func (mp *MarketPlace) MarketPlaceId() (string, error) {
-	if mp.Id != nil {
+	if mp.Id != "" {
 		return mp.Id, nil
 	}
 	if val, ok := MarketPlaceIds[mp.Region]; ok {
 		return val, nil
 	}
-	return nil, MarketplaceError{"region", mp.Region}
+	return "", MarketplaceError{"region", mp.Region}
 }
 
 // TODO add encoding for JP

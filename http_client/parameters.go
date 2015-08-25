@@ -1,77 +1,81 @@
 package mwsHttpClient
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
 )
 
-type NormalizedParameters url.Values
+type NormalizedParameters struct {
+	*url.Values
+}
 
 func (params NormalizedParameters) UrlEncode() string {
 	return strings.Replace(params.Encode(), "+", "%20", -1)
 }
 
-func formatParameterKey(keys ...string) string {
-	return strings.Join(keys, ".")
+func formatParameterKey(baseKey string, keys ...string) string {
+	return baseKey + "." + strings.Join(keys, ".")
 }
 
 type Parameters map[string]interface{}
 
-func (params *Parameters) Merge(parameters Parameters) {
+func (params Parameters) Merge(parameters Parameters) {
 	for key, val := range parameters {
 		params[key] = val
 	}
 }
 
-func (params *Parameters) StructureKeys(baseKey string, keys ...string) (params Parameters) {
+func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameters {
 	data, ok := params[baseKey]
 	if !ok {
 		//TODO log
-		return
+		return params
 	}
 
 	delete(params, baseKey)
 
-	switch t := data.(type) {
+	switch data.(type) {
 	default:
-		key = formatParameterKey(baseKey, keys...)
-		params[key] = val
+		key := formatParameterKey(baseKey, keys...)
+		params[key] = data
 	case []string:
-		for i, val := range data {
+		for i, val := range data.([]string) {
 			nkeys := append(keys, strconv.Itoa(i))
-			key = formatParameterKey(baseKey, nkeys...)
+			key := formatParameterKey(baseKey, nkeys...)
 			params[key] = val
 		}
 	case Parameters:
-		for k, val := range data {
+		for k, val := range data.(Parameters) {
 			nkeys := append(keys, k)
-			key = formatParameterKey(baseKey, nkeys...)
+			key := formatParameterKey(baseKey, nkeys...)
 			params[key] = val
 		}
 	}
-	return
+	return params
 }
 
-func (params *Parameters) ToNormalizedParameters() (NormalizedParameters, error) {
+func (params Parameters) ToNormalizedParameters() (NormalizedParameters, error) {
 	sparams := NormalizedParameters{}
+	var stringVal string
 	for key, val := range params {
 		switch t := val.(type) {
 		default:
 			err := fmt.Errorf("Unexpected type %T", t)
-			return nil, err
+			return sparams, err
 		case bool:
-			val = strconv.FormatBool(val)
+			stringVal = strconv.FormatBool(val.(bool))
 		case int:
-			val = strconv.Itoa(val)
+			stringVal = strconv.Itoa(val.(int))
 		case float32:
-			val = strconv.FormatFloat(val, 'f', 2, 32)
+			stringVal = strconv.FormatFloat(float64(val.(float32)), 'f', 2, 32)
 		case float64:
-			val = strconv.FormatFloat(val, 'f', 2, 64)
+			stringVal = strconv.FormatFloat(val.(float64), 'f', 2, 64)
 		case string:
-			val = val
+			stringVal = val.(string)
 		}
-		sparams.Add(key, val)
+		sparams.Set(key, stringVal)
 	}
 	return sparams, nil
 }

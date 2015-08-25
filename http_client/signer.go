@@ -7,7 +7,7 @@ import (
 )
 
 func SignV2(stringToSign string, secret string) string {
-	hmac256 = ComputeHmac256(stringToSign, secret)
+	hmac256 := computeHmac256(stringToSign, secret)
 	return base64.StdEncoding.EncodeToString(hmac256)
 }
 
