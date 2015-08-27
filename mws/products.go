@@ -10,7 +10,7 @@ type Products struct {
 }
 
 // sellerId, authToken, region string
-func NewProductsClient(config MwsConfig) MwsClient {
+func NewProductsClient(config MwsConfig) *Products {
 	prodcuts := new(Products)
 	base := NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
 	prodcuts.MwsBase = base
@@ -27,9 +27,10 @@ func (p Products) Name() string {
 
 func (p Products) GetMatchingProductForId(idType string, idList []string) (string, error) {
 	params := Parameters{
-		"Action": "GetMatchingProductForId",
-		"IdType": idType,
-		"IdList": idList,
+		"Action":        "GetMatchingProductForId",
+		"IdType":        idType,
+		"IdList":        idList,
+		"MarketplaceId": p.MarketPlaceId,
 	}
 	structedParams, err := params.StructureKeys("IdList", "Id").ToNormalizedParameters()
 

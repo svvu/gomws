@@ -2,12 +2,16 @@ package mwsHttpClient
 
 import (
 	"bytes"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 type MwsHttpClient struct {
-	EndPoint   string
+	Host       string
+	Path       string
 	Parameters NormalizedParameters
 	signed     bool
 }
@@ -25,10 +29,11 @@ func (client *MwsHttpClient) calculateStringToSignV2() string {
 	var stringToSign bytes.Buffer
 
 	stringToSign.WriteString("POST\n")
-	stringToSign.WriteString(client.EndPoint)
-	stringToSign.WriteString("\n/")
+	stringToSign.WriteString(client.Host)
 	stringToSign.WriteString("\n")
-	stringToSign.WriteString(client.Parameters.UrlEncode())
+	stringToSign.WriteString(client.Path)
+	stringToSign.WriteString("\n")
+	stringToSign.WriteString(client.Parameters.Encode())
 
 	return stringToSign.String()
 }
@@ -45,27 +50,40 @@ func (client *MwsHttpClient) SignQuery(secretKey string) {
 	client.signed = true
 }
 
+func (client *MwsHttpClient) EndPoint() string {
+	return "https://" + client.Host + client.Path
+}
+
 func (client *MwsHttpClient) Request() string {
 	if !client.signed {
 		return ""
 	}
 
-	encodedParams := client.Parameters.UrlEncode()
+	encodedParams := client.Parameters.Encode()
 	req, err := http.NewRequest(
 		"POST",
-		client.EndPoint,
+		client.EndPoint(),
 		bytes.NewBufferString(encodedParams),
 	)
 
-	// req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	// req.Header.Add("Content-Length", strconv.Itoa(len(encodedParams)))
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(encodedParams)))
 
 	httpClient := &http.Client{}
 	resp, err := httpClient.Do(req)
 	if err != nil {
-
+		// TODO Clean up
+		fmt.Println(err)
 	}
+
 	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+	// TODO Clean up
+	fmt.Println(string(body))
 
 	return "sth"
 }

@@ -8,11 +8,19 @@ import (
 )
 
 type NormalizedParameters struct {
-	*url.Values
+	url.Values
 }
 
-func (params NormalizedParameters) UrlEncode() string {
-	return strings.Replace(params.Encode(), "+", "%20", -1)
+func NewNormalizedParameters() NormalizedParameters {
+	return NormalizedParameters{url.Values{}}
+}
+
+func (params NormalizedParameters) Encode() string {
+	return strings.Replace(params.Values.Encode(), "+", "%20", -1)
+}
+
+func (params NormalizedParameters) Set(key, value string) {
+	params.Values.Set(key, value)
 }
 
 func formatParameterKey(baseKey string, keys ...string) string {
@@ -42,7 +50,7 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 		params[key] = data
 	case []string:
 		for i, val := range data.([]string) {
-			nkeys := append(keys, strconv.Itoa(i))
+			nkeys := append(keys, strconv.Itoa(i+1))
 			key := formatParameterKey(baseKey, nkeys...)
 			params[key] = val
 		}
@@ -57,7 +65,7 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 }
 
 func (params Parameters) ToNormalizedParameters() (NormalizedParameters, error) {
-	sparams := NormalizedParameters{}
+	sparams := NewNormalizedParameters()
 	var stringVal string
 	for key, val := range params {
 		switch t := val.(type) {

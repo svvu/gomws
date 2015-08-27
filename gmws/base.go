@@ -56,10 +56,6 @@ func (base MwsBase) Path() string {
 	return "/" + base.Name + "/" + base.Version
 }
 
-func (base MwsBase) EndPoint() string {
-	return base.Host + "/" + base.Path()
-}
-
 func (base MwsBase) SignatureMethod() string {
 	return "HmacSHA256"
 }
@@ -90,7 +86,8 @@ func (base MwsBase) getCredential() Credential {
 
 func (base MwsBase) HttpClient(params NormalizedParameters) *MwsHttpClient {
 	httpClient := MwsHttpClient{
-		EndPoint:   base.EndPoint(),
+		Host:       base.Host,
+		Path:       base.Path(),
 		Parameters: params,
 	}
 

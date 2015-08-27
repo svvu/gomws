@@ -5,16 +5,16 @@ import (
 )
 
 var EndPoints = map[string]string{
-	"A2EUQ1WTGCTBG2": "https://mws.amazonservices.ca",
-	"ATVPDKIKX0DER":  "https://mws.amazonservices.com ",
-	"A1PA6795UKMFR9": "https://mws-eu.amazonservices.com",
-	"A1RKKUPIHCS9HS": "https://mws-eu.amazonservices.com",
-	"A13V1IB3VIYZZH": "https://mws-eu.amazonservices.com",
-	"A21TJRUUN4KGV":  "https://mws.amazonservices.in",
-	"APJ6JRA9NG5V4":  "https://mws-eu.amazonservices.com",
-	"A1F83G8C2ARO7P": "https://mws-eu.amazonservices.com",
-	"A1VC38T7YXB528": "https://mws.amazonservices.jp",
-	"AAHKV2X7AFYLW":  "https://mws.amazonservices.com.cn",
+	"A2EUQ1WTGCTBG2": "mws.amazonservices.ca",
+	"ATVPDKIKX0DER":  "mws.amazonservices.com",
+	"A1PA6795UKMFR9": "mws-eu.amazonservices.com",
+	"A1RKKUPIHCS9HS": "mws-eu.amazonservices.com",
+	"A13V1IB3VIYZZH": "mws-eu.amazonservices.com",
+	"A21TJRUUN4KGV":  "mws.amazonservices.in",
+	"APJ6JRA9NG5V4":  "mws-eu.amazonservices.com",
+	"A1F83G8C2ARO7P": "mws-eu.amazonservices.com",
+	"A1VC38T7YXB528": "mws.amazonservices.jp",
+	"AAHKV2X7AFYLW":  "mws.amazonservices.com.cn",
 }
 
 var MarketPlaceIds = map[string]string{
