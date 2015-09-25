@@ -1,4 +1,4 @@
-package gmws
+package utils
 
 import (
 	"sort"

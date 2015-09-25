@@ -2,6 +2,7 @@ package gmws
 
 import (
 	. "../http_client"
+	. "../marketplace"
 )
 
 type MwsBase struct {

@@ -1,4 +1,4 @@
-package gmws
+package marketplace
 
 import (
 	"fmt"
