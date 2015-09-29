@@ -8,43 +8,44 @@ import (
 	"strings"
 )
 
-type NormalizedParameters struct {
+// Values is url.Values for custom encoding.
+type Values struct {
 	url.Values
 }
 
-// Constructor for NormalizedParameters
-func NewNormalizedParameters() NormalizedParameters {
-	return NormalizedParameters{url.Values{}}
+func NewValues() Values {
+	return Values{url.Values{}}
 }
 
-func (params NormalizedParameters) Encode() string {
+func (params Values) Encode() string {
 	return strings.Replace(params.Values.Encode(), "+", "%20", -1)
 }
 
-func (params NormalizedParameters) Set(key, value string) {
+// Set sets the key to value. It replaces any existing values.
+func (params Values) Set(key, value string) {
 	params.Values.Set(key, value)
 }
 
-// formatParameterKey combine the base key and the augument keys by '.'
+// formatParameterKey combine the base key and the augument keys by '.'.
 func formatParameterKey(baseKey string, keys ...string) string {
 	return baseKey + "." + strings.Join(keys, ".")
 }
 
-// The parameters pass to the gmws api
+// The parameters pass to the gmws api.
 type Parameters map[string]interface{}
 
-// Merge merge the target Parameters to current Parameters
+// Merge merge the target Parameters to current Parameters.
 func (params Parameters) Merge(parameters Parameters) {
 	for key, val := range parameters {
 		params[key] = val
 	}
 }
 
-// StructureKeys structure the keys for the parameters
-// The basekey is the key for the current parameters
-// keys are the string to augument the base key
+// StructureKeys structure the keys for the parameters.
+// The basekey is the key for the current parameters.
+// keys are the string to augument the base key.
 //
-// If the value is a slice, then additonal index will be used to augument the keys
+// If the value is a slice, then additonal index will be used to augument the keys.
 // Ex:
 // p := Parameters{
 // 		"slice": []string{"a", "b"},
@@ -55,7 +56,7 @@ func (params Parameters) Merge(parameters Parameters) {
 // 		"slice.fields.2": "a",
 // }
 //
-// If the value is another Parameters, the Parameters' keys will used to augument
+// If the value is another Parameters, the Parameters' keys will used to augument.
 // the keys
 // Ex:
 // p := Parameters{
@@ -67,7 +68,7 @@ func (params Parameters) Merge(parameters Parameters) {
 // 		"params.fields.b": 2,
 // }
 //
-// If the value is other type, other keys will be used to structure the keys
+// If the value is other type, other keys will be used to structure the keys.
 func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameters {
 	data, ok := params[baseKey]
 	if !ok {
@@ -123,10 +124,10 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 	return params
 }
 
-// NormalizeParameters convert all the values to string, if a value can't not
-// convert to string, an error will be returned
-func (params Parameters) NormalizeParameters() (NormalizedParameters, error) {
-	nParams := NewNormalizedParameters()
+// Normalize convert all the values to string, if a value can't not
+// convert to string, an error will be returned.
+func (params Parameters) Normalize() (Values, error) {
+	nParams := NewValues()
 	var stringVal string
 	for key, val := range params {
 		switch t := val.(type) {

@@ -45,7 +45,7 @@ type MarketPlace struct {
 	EndPoint string
 }
 
-func NewMarketPlace(region string) (MarketPlace, error) {
+func New(region string) (MarketPlace, error) {
 	mp := MarketPlace{Region: region}
 
 	marketPlaceId, idError := mp.MarketPlaceId()
@@ -62,7 +62,7 @@ func NewMarketPlace(region string) (MarketPlace, error) {
 	return mp, nil
 }
 
-// Endpoint get the MWS end point for the region
+// Endpoint get the MWS end point for the region.
 func (mp *MarketPlace) MarketPlaceEndPoint() (string, error) {
 	if mp.EndPoint != "" {
 		return mp.EndPoint, nil
@@ -73,7 +73,7 @@ func (mp *MarketPlace) MarketPlaceEndPoint() (string, error) {
 	return "", MarketplaceError{"marketplace id", mp.Id}
 }
 
-// MarketPlaceID get the marketpalce id for the region
+// MarketPlaceID get the marketpalce id for the region.
 func (mp *MarketPlace) MarketPlaceId() (string, error) {
 	if mp.Id != "" {
 		return mp.Id, nil
@@ -84,7 +84,8 @@ func (mp *MarketPlace) MarketPlaceId() (string, error) {
 	return "", MarketplaceError{"region", mp.Region}
 }
 
-// TODO add encoding for JP
+// Encoding get the ecoding for file upload and parsing
+// TODO add encoding for JP.
 func Encoding(region string) string {
 	switch region {
 	case "CN":

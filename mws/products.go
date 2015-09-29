@@ -2,7 +2,7 @@ package mws
 
 import (
 	. "../gmws"
-	. "../http_client"
+	. "../mwsHttpClient"
 )
 
 type Products struct {
@@ -24,14 +24,14 @@ func (p Products) Name() string {
 	return "Products"
 }
 
-func (p Products) GetMatchingProductForId(idType string, idList []string) (string, error) {
+func (p Products) GetMatchingProductForId(idType string, idList []string) (Result, error) {
 	params := Parameters{
 		"Action":        "GetMatchingProductForId",
 		"IdType":        idType,
 		"IdList":        idList,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.StructureKeys("IdList", "Id").NormalizeParameters()
+	structedParams, err := params.StructureKeys("IdList", "Id").Normalize()
 
 	if err != nil {
 		return "", err

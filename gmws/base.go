@@ -1,18 +1,18 @@
 package gmws
 
 import (
-	. "../http_client"
-	. "../marketplace"
+	"../marketplace"
+	. "../mwsHttpClient"
 )
 
 type MwsBase struct {
-	SellerId      string
-	AuthToken     string
-	Region        string
+	SellerId      string // Seller's Amazon id
+	AuthToken     string // Auth token for developer to use the api
+	Region        string // Region of the marketplace in two character
 	MarketPlaceId string
 	Host          string
-	Version       string
-	Name          string
+	Version       string // The api's version
+	Name          string // The api's name
 	accessKey     string
 	secretKey     string
 }
@@ -34,7 +34,7 @@ func NewMwsBase(config MwsConfig, version, name string) *MwsBase {
 		region = "US"
 	}
 
-	marketPlace, mError := NewMarketPlace(region)
+	marketPlace, mError := marketplace.New(region)
 	if mError != nil {
 		// TODO
 	}
@@ -65,6 +65,7 @@ func (base MwsBase) SignatureVersion() string {
 	return "2"
 }
 
+// paramsToAugment generate a list of client information add to the query.
 func (base MwsBase) paramsToAugment() map[string]string {
 	clientInfo := map[string]string{
 		"SellerId":         base.SellerId,
@@ -77,6 +78,9 @@ func (base MwsBase) paramsToAugment() map[string]string {
 	return clientInfo
 }
 
+// getCredential return the mws credential, if not set, it will try to retrieve
+//  the information from env variables.
+// Using env variables is recommanded and more secure.
 func (base MwsBase) getCredential() Credential {
 	if base.accessKey != "" && base.secretKey != "" {
 		return Credential{base.accessKey, base.secretKey}
@@ -85,11 +89,13 @@ func (base MwsBase) getCredential() Credential {
 	}
 }
 
-func (base MwsBase) HttpClient(params NormalizedParameters) *MwsHttpClient {
+// HttpClient return an http client with pass in querys, and ready for send of
+//  request to the server
+func (base MwsBase) HttpClient(values Values) *MwsHttpClient {
 	httpClient := MwsHttpClient{
 		Host:       base.Host,
 		Path:       base.Path(),
-		Parameters: params,
+		Parameters: values,
 	}
 
 	httpClient.AugmentParameters(base.paramsToAugment())
