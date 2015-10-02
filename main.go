@@ -2,7 +2,8 @@ package main
 
 import (
 	. "./gmws"
-	. "./mws"
+	"./mws/products"
+	// . "./mwsHttps"
 	"fmt"
 )
 
@@ -13,8 +14,12 @@ func main() {
 		AccessKey: "",
 		SecretKey: "",
 	}
-	products := NewProductsClient(config)
-	result, err := products.GetMatchingProductForId("ASIN", []string{"B000EVOSE4"})
-	fmt.Println(result)
-	fmt.Println(err)
+	products := products.NewClient(config)
+	fmt.Println("------GetServiceStatus------")
+	result, err := products.GetServiceStatus()
+	result.PrettyPrint()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 }

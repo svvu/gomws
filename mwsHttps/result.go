@@ -1,4 +1,4 @@
-package mwsHttpClient
+package mwsHttps
 
 import (
 	"bytes"

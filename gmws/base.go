@@ -2,7 +2,7 @@ package gmws
 
 import (
 	"../marketplace"
-	. "../mwsHttpClient"
+	"../mwsHttps"
 )
 
 type MwsBase struct {
@@ -91,8 +91,8 @@ func (base MwsBase) getCredential() Credential {
 
 // HttpClient return an http client with pass in querys, and ready for send of
 //  request to the server
-func (base MwsBase) HttpClient(values Values) *MwsHttpClient {
-	httpClient := MwsHttpClient{
+func (base MwsBase) HttpClient(values mwsHttps.Values) *mwsHttps.Client {
+	httpClient := mwsHttps.Client{
 		Host:       base.Host,
 		Path:       base.Path(),
 		Parameters: values,

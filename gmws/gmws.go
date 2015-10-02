@@ -1,7 +1,9 @@
 package gmws
 
 import (
+	"../mwsHttps"
 	"os"
+	"strings"
 )
 
 type MwsConfig struct {
@@ -33,4 +35,26 @@ func GetCredential() Credential {
 	credential.SecretKey = os.Getenv(EnvSecretKey)
 
 	return credential
+}
+
+func OptionalParams(acceptKeys []string, ops []mwsHttps.Parameters) mwsHttps.Parameters {
+	param := mwsHttps.Parameters{}
+	op := mwsHttps.Parameters{}
+
+	if len(ops) == 0 {
+		return param
+	} else {
+		for _, p := range ops {
+			op.Merge(p)
+		}
+	}
+
+	for _, key := range acceptKeys {
+		value, ok := op[key]
+		if ok {
+			param[strings.Title(key)] = value
+			delete(op, key)
+		}
+	}
+	return param
 }

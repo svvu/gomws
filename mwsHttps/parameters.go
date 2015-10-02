@@ -1,4 +1,4 @@
-package mwsHttpClient
+package mwsHttps
 
 import (
 	"fmt"
@@ -7,6 +7,11 @@ import (
 	"strconv"
 	"strings"
 )
+
+// formatParameterKey combine the base key and the augument keys by '.'.
+func formatParameterKey(baseKey string, keys ...string) string {
+	return baseKey + "." + strings.Join(keys, ".")
+}
 
 // Values is url.Values for custom encoding.
 type Values struct {
@@ -26,19 +31,15 @@ func (params Values) Set(key, value string) {
 	params.Values.Set(key, value)
 }
 
-// formatParameterKey combine the base key and the augument keys by '.'.
-func formatParameterKey(baseKey string, keys ...string) string {
-	return baseKey + "." + strings.Join(keys, ".")
-}
-
 // The parameters pass to the gmws api.
 type Parameters map[string]interface{}
 
 // Merge merge the target Parameters to current Parameters.
-func (params Parameters) Merge(parameters Parameters) {
+func (params Parameters) Merge(parameters Parameters) Parameters {
 	for key, val := range parameters {
 		params[key] = val
 	}
+	return params
 }
 
 // StructureKeys structure the keys for the parameters.
@@ -98,29 +99,6 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 		}
 	}
 
-	// switch data.(type) {
-	// default:
-	// 	key := formatParameterKey(baseKey, keys...)
-	// 	params[key] = data
-	// case Parameters:
-	// 	for k, val := range data.(Parameters) {
-	// 		nkeys := append(keys, k)
-	// 		key := formatParameterKey(baseKey, nkeys...)
-	// 		params[key] = val
-	// 	}
-	// case []string:
-	// 	for i, val := range data.([]string) {
-	// 		nkeys := append(keys, strconv.Itoa(i+1))
-	// 		key := formatParameterKey(baseKey, nkeys...)
-	// 		params[key] = val
-	// 	}
-	// case map[string]string:
-	// 	for k, val := range data.(map[string]string) {
-	// 		nkeys := append(keys, k)
-	// 		key := formatParameterKey(baseKey, nkeys...)
-	// 		params[key] = val
-	// 	}
-	// }
 	return params
 }
 

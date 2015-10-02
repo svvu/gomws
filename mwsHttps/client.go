@@ -1,4 +1,4 @@
-package mwsHttpClient
+package mwsHttps
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 )
 
 // http client wrapper to handle request to mws.
-type MwsHttpClient struct {
+type Client struct {
 	// The host of the end point
 	Host string
 	// The path to the operation
@@ -22,7 +22,7 @@ type MwsHttpClient struct {
 }
 
 // calculateStringToSignV2 Calculate the signature to sign the query for signature version 2.
-func (client *MwsHttpClient) calculateStringToSignV2() string {
+func (client *Client) calculateStringToSignV2() string {
 	var stringToSign bytes.Buffer
 
 	client.Parameters.Set("Timestamp", now())
@@ -38,21 +38,21 @@ func (client *MwsHttpClient) calculateStringToSignV2() string {
 }
 
 // signature generate the signature by the parameters and the secretKey using HmacSHA256.
-func (client *MwsHttpClient) signature(secretKey string) string {
+func (client *Client) signature(secretKey string) string {
 	stringToSign := client.calculateStringToSignV2()
 	signature2 := SignV2(stringToSign, secretKey)
 	return signature2
 }
 
 // SignQuery generate the signature and add the signature to the http parameters.
-func (client *MwsHttpClient) SignQuery(secretKey string) {
+func (client *Client) SignQuery(secretKey string) {
 	signature := client.signature(secretKey)
 	client.Parameters.Set("Signature", signature)
 	client.signed = true
 }
 
 // AugmentParameters add new parameters to http's query and indicate the query is not signed.
-func (client *MwsHttpClient) AugmentParameters(params map[string]string) {
+func (client *Client) AugmentParameters(params map[string]string) {
 	for k, v := range params {
 		client.Parameters.Set(k, v)
 	}
@@ -60,13 +60,13 @@ func (client *MwsHttpClient) AugmentParameters(params map[string]string) {
 	client.signed = false
 }
 
-func (client *MwsHttpClient) EndPoint() string {
+func (client *Client) EndPoint() string {
 	return "https://" + client.Host + client.Path
 }
 
 // Request send the http request to mws server.
 // If the query is indicated un signed, an error will return.
-func (client *MwsHttpClient) Request() (Result, error) {
+func (client *Client) Request() (Result, error) {
 	if !client.signed {
 		return "", fmt.Errorf("Query is not signed")
 	}
