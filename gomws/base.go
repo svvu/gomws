@@ -1,4 +1,4 @@
-package gmws
+package gomws
 
 import (
 	"../marketplace"

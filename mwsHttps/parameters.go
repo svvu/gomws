@@ -31,7 +31,7 @@ func (params Values) Set(key, value string) {
 	params.Values.Set(key, value)
 }
 
-// The parameters pass to the gmws api.
+// The parameters pass to the gomws api.
 type Parameters map[string]interface{}
 
 // Merge merge the target Parameters to current Parameters.

@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "./gmws"
+	. "./gomws"
 	"./mws/products"
 	// . "./mwsHttps"
 	"fmt"

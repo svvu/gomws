@@ -1,4 +1,4 @@
-package gmws
+package gomws
 
 import (
 	"../mwsHttps"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// The configuraton to create the gmws base.
+// The configuraton to create the gomws base.
 // AccessKey and SecretKey are optional, bette to set them in evn variables.
 type MwsConfig struct {
 	SellerId  string
