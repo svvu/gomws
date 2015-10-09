@@ -14,7 +14,12 @@ func main() {
 		AccessKey: "",
 		SecretKey: "",
 	}
-	products := products.NewClient(config)
+	products, err := products.NewClient(config)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	fmt.Println("------GetServiceStatus------")
 	result, err := products.GetServiceStatus()
 	result.PrettyPrint()

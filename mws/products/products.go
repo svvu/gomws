@@ -11,11 +11,14 @@ type Products struct {
 	*gmws.MwsBase
 }
 
-func NewClient(config gmws.MwsConfig) *Products {
+func NewClient(config gmws.MwsConfig) (*Products, error) {
 	prodcuts := new(Products)
-	base := gmws.NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
+	base, err := gmws.NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
+	if err != nil {
+		return nil, err
+	}
 	prodcuts.MwsBase = base
-	return prodcuts
+	return prodcuts, nil
 }
 
 func (p Products) Version() string {

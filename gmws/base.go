@@ -3,6 +3,7 @@ package gmws
 import (
 	"../marketplace"
 	"../mwsHttps"
+	"fmt"
 )
 
 type MwsBase struct {
@@ -18,15 +19,13 @@ type MwsBase struct {
 }
 
 // sellerId, authToken, region string
-func NewMwsBase(config MwsConfig, version, name string) *MwsBase {
+func NewMwsBase(config MwsConfig, version, name string) (*MwsBase, error) {
 	if config.SellerId == "" {
-		// Log
-		return nil
+		return nil, fmt.Errorf("No seller id provided")
 	}
 
 	if config.AuthToken == "" {
-		// Log
-		return nil
+		return nil, fmt.Errorf("No auth token provided")
 	}
 
 	region := config.Region
@@ -36,7 +35,7 @@ func NewMwsBase(config MwsConfig, version, name string) *MwsBase {
 
 	marketPlace, mError := marketplace.New(region)
 	if mError != nil {
-		// TODO
+		return nil, mError
 	}
 
 	base := MwsBase{
@@ -50,11 +49,18 @@ func NewMwsBase(config MwsConfig, version, name string) *MwsBase {
 		accessKey:     config.AccessKey,
 		secretKey:     config.SecretKey,
 	}
-	return &base
+	return &base, nil
 }
 
 func (base MwsBase) Path() string {
-	return "/" + base.Name + "/" + base.Version
+	path := ""
+	if base.Name != "" {
+		path += "/" + base.Name
+	}
+	if base.Version != "" {
+		path += "/" + base.Version
+	}
+	return path
 }
 
 func (base MwsBase) SignatureMethod() string {
