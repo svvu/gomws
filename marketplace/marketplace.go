@@ -45,21 +45,21 @@ type MarketPlace struct {
 	EndPoint string
 }
 
-func New(region string) (MarketPlace, error) {
+func New(region string) (*MarketPlace, error) {
 	mp := MarketPlace{Region: region}
 
 	marketPlaceId, idError := mp.MarketPlaceId()
 	if idError != nil {
-		return mp, idError
+		return nil, idError
 	}
 	mp.Id = marketPlaceId
 
 	endPoint, endPointError := mp.MarketPlaceEndPoint()
 	if endPointError != nil {
-		return mp, endPointError
+		return nil, endPointError
 	}
 	mp.EndPoint = endPoint
-	return mp, nil
+	return &mp, nil
 }
 
 // Endpoint get the MWS end point for the region.
