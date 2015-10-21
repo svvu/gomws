@@ -10,7 +10,8 @@ import (
 
 // formatParameterKey combine the base key and the augument keys by '.'.
 func formatParameterKey(baseKey string, keys ...string) string {
-	return baseKey + "." + strings.Join(keys, ".")
+	paramKeys := append([]string{baseKey}, keys...)
+	return strings.Join(paramKeys, ".")
 }
 
 // Values is url.Values for custom encoding.
@@ -24,11 +25,6 @@ func NewValues() Values {
 
 func (params Values) Encode() string {
 	return strings.Replace(params.Values.Encode(), "+", "%20", -1)
-}
-
-// Set sets the key to value. It replaces any existing values.
-func (params Values) Set(key, value string) {
-	params.Values.Set(key, value)
 }
 
 // The parameters pass to the gomws api.
@@ -73,7 +69,6 @@ func (params Parameters) Merge(parameters Parameters) Parameters {
 func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameters {
 	data, ok := params[baseKey]
 	if !ok {
-		//TODO log
 		return params
 	}
 
@@ -103,7 +98,8 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 }
 
 // Normalize convert all the values to string, if a value can't not
-// convert to string, an error will be returned.
+// 	convert to string, an error will be returned.
+// Float will round to 2 decimal precision.
 func (params Parameters) Normalize() (Values, error) {
 	nParams := NewValues()
 	var stringVal string

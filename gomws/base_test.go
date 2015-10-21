@@ -136,8 +136,6 @@ func TestGetCredential(t *testing.T) {
 func TestHttpClient(t *testing.T) {
 	client, _ := NewMwsBase(testConfig, "V1", "Test")
 	params := mwsHttps.NewValues()
-	params.Set("param1", "value1")
-	params.Set("param2", "value2")
 	httpClient := client.HttpClient(params)
 
 	Convey("Http client has expected host", t, func() {
@@ -146,35 +144,5 @@ func TestHttpClient(t *testing.T) {
 
 	Convey("Http client has expected path", t, func() {
 		So(httpClient.Path, ShouldEqual, "/Test/V1")
-	})
-
-	Convey("Http client has Credential keys in params", t, func() {
-		So(httpClient.Parameters.Get("Signature"), ShouldNotBeNil)
-	})
-
-	Convey("Http client's parameters should be augmented by client's info", t, func() {
-		Convey("Has SellerId", func() {
-			So(httpClient.Parameters.Get("SellerId"), ShouldNotBeNil)
-		})
-
-		Convey("Has MWSAuthToken", func() {
-			So(httpClient.Parameters.Get("MWSAuthToken"), ShouldNotBeNil)
-		})
-
-		Convey("Has SignatureMethod", func() {
-			So(httpClient.Parameters.Get("SignatureMethod"), ShouldNotBeNil)
-		})
-
-		Convey("Has SignatureVersion", func() {
-			So(httpClient.Parameters.Get("SignatureVersion"), ShouldNotBeNil)
-		})
-
-		Convey("Has AWSAccessKeyId", func() {
-			So(httpClient.Parameters.Get("AWSAccessKeyId"), ShouldNotBeNil)
-		})
-
-		Convey("Has Version", func() {
-			So(httpClient.Parameters.Get("Version"), ShouldNotBeNil)
-		})
 	})
 }

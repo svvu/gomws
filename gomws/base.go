@@ -99,12 +99,11 @@ func (base MwsBase) getCredential() Credential {
 //  request to the server
 func (base MwsBase) HttpClient(values mwsHttps.Values) *mwsHttps.Client {
 	httpClient := mwsHttps.Client{
-		Host:       base.Host,
-		Path:       base.Path(),
-		Parameters: values,
+		Host: base.Host,
+		Path: base.Path(),
 	}
-
+	httpClient.SetParameters(values)
+	httpClient.SetSecretKey(base.getCredential().SecretKey)
 	httpClient.AugmentParameters(base.paramsToAugment())
-	httpClient.SignQuery(base.getCredential().SecretKey)
 	return &httpClient
 }

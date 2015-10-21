@@ -10,14 +10,6 @@ import (
 
 type Result string
 
-func (r Result) ToJSON() {
-
-}
-
-func (r Result) ToStruct() {
-
-}
-
 // PrettyPrint print the xml with indentation added to the start tag of xml.
 // namespace will be ignored.
 func (r Result) PrettyPrint() {
