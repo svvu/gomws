@@ -21,6 +21,16 @@ type Client struct {
 	signed bool
 	// Key use to sign the query
 	signatureKey string
+
+	*http.Client
+}
+
+func NewClient(host, path string) *Client {
+	return &Client{
+		Host:   host,
+		Path:   path,
+		Client: &http.Client{},
+	}
 }
 
 func (client *Client) checkSignStatus() error {
@@ -87,14 +97,8 @@ func (client *Client) EndPoint() string {
 	return "https://" + client.Host + client.Path
 }
 
-// Request send the http request to mws server.
-// If the query is indicated un signed, an error will return.
-func (client *Client) Request() (Result, error) {
-	signatureErr := client.checkSignStatus()
-	if signatureErr != nil {
-		return "", signatureErr
-	}
-
+// buildRequest prepare the requet to send to the api.
+func (client *Client) buildRequest() (*http.Request, error) {
 	encodedParams := client.parameters.Encode()
 	req, err := http.NewRequest(
 		"POST",
@@ -102,23 +106,61 @@ func (client *Client) Request() (Result, error) {
 		bytes.NewBufferString(encodedParams),
 	)
 
+	if err != nil {
+		return nil, err
+	}
+
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(encodedParams)))
 
-	httpClient := &http.Client{}
+	return req, nil
+}
 
-	resp, err := httpClient.Do(req)
+// Send send the http request to mws server.
+// If the query is indicated un signed, an error will return.
+func (client *Client) Send() *Response {
+	response := Response{}
+	signatureErr := client.checkSignStatus()
+	if signatureErr != nil {
+		response.Error = signatureErr
+		return &response
+	}
+
+	if client.Client == nil {
+		client.Client = &http.Client{}
+	}
+
+	req, err := client.buildRequest()
+	if err != nil {
+		response.Error = err
+		return &response
+	}
+
+	resp, err := client.Client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
-		return "", err
+		response.Error = err
+		return &response
+	}
+
+	return client.parseResponse(&response, resp)
+}
+
+func (client *Client) parseResponse(response *Response, resp *http.Response) *Response {
+	response.Status = resp.Status
+	response.StatusCode = resp.StatusCode
+	if !CheckStatusCode(resp.StatusCode) {
+		response.Error = fmt.Errorf("Request not success. Reason: %v", resp.Status)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		response.Error = err
+		return response
 	}
 
-	return Result(body), nil
+	response.Result = string(body)
+	return response
 }
 
 const (

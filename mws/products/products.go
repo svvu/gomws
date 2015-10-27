@@ -31,25 +31,25 @@ func (p Products) Name() string {
 
 // Returns the operational status of the Products API section.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetServiceStatus.html
-func (p Products) GetServiceStatus() (mwsHttps.Result, error) {
+func (p Products) GetServiceStatus() *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action": "GetServiceStatus",
 	}
 	structedParams, err := params.Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns a list of products and their attributes, based on a search query.
 // http://docs.developer.amazonservices.com/en_US/products/Products_ListMatchingProducts.html
 // Optional Parameters:
 // 	queryContextId string
-func (p Products) ListMatchingProducts(query string, optional ...mwsHttps.Parameters) (mwsHttps.Result, error) {
+func (p Products) ListMatchingProducts(query string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
 	op := gomws.OptionalParams([]string{"queryContextId"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "ListMatchingProducts",
@@ -59,16 +59,16 @@ func (p Products) ListMatchingProducts(query string, optional ...mwsHttps.Parame
 	structedParams, err := params.Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns a list of products and their attributes, based on a list of ASIN values.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMatchingProduct.html
-func (p Products) GetMatchingProduct(asinList []string) (mwsHttps.Result, error) {
+func (p Products) GetMatchingProduct(asinList []string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetMatchingProduct",
 		"ASINList":      asinList,
@@ -77,16 +77,16 @@ func (p Products) GetMatchingProduct(asinList []string) (mwsHttps.Result, error)
 	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMatchingProductForId.html
-func (p Products) GetMatchingProductForId(idType string, idList []string) (mwsHttps.Result, error) {
+func (p Products) GetMatchingProductForId(idType string, idList []string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetMatchingProductForId",
 		"IdType":        idType,
@@ -96,16 +96,16 @@ func (p Products) GetMatchingProductForId(idType string, idList []string) (mwsHt
 	structedParams, err := params.StructureKeys("IdList", "Id").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns the current competitive price of a product, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetCompetitivePricingForSKU.html
-func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) (mwsHttps.Result, error) {
+func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetCompetitivePricingForSKU",
 		"SellerSKUList": sellerSKUList,
@@ -114,16 +114,16 @@ func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) (mwsHttps.
 	structedParams, err := params.StructureKeys("SellerSKUList", "SellerSKU").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns the current competitive price of a product, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetCompetitivePricingForASIN.html
-func (p Products) GetCompetitivePricingForASIN(asinList []string) (mwsHttps.Result, error) {
+func (p Products) GetCompetitivePricingForASIN(asinList []string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetCompetitivePricingForASIN",
 		"ASINList":      asinList,
@@ -132,11 +132,11 @@ func (p Products) GetCompetitivePricingForASIN(asinList []string) (mwsHttps.Resu
 	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns pricing information for the lowest-price active offer listings for up to 20 products, based on SellerSKU.
@@ -144,7 +144,7 @@ func (p Products) GetCompetitivePricingForASIN(asinList []string) (mwsHttps.Resu
 // Optional Parameters:
 // 	itemCondition string
 // 	excludeMe bool
-func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional ...mwsHttps.Parameters) (mwsHttps.Result, error) {
+func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
 	op := gomws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetLowestOfferListingsForSKU",
@@ -154,11 +154,11 @@ func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional 
 	structedParams, err := params.StructureKeys("SellerSKUList", "SellerSKU").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
@@ -166,7 +166,7 @@ func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional 
 // Optional Parameters:
 // 	itemCondition string
 // 	excludeMe bool
-func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...mwsHttps.Parameters) (mwsHttps.Result, error) {
+func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
 	op := gomws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetLowestOfferListingsForASIN",
@@ -176,16 +176,16 @@ func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...m
 	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns lowest priced offers for a single product, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestPricedOffersForSKU.html
-func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) (mwsHttps.Result, error) {
+func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetLowestPricedOffersForSKU",
 		"SellerSKU":     sellerSKU,
@@ -195,16 +195,16 @@ func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) (
 	structedParams, err := params.Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns lowest priced offers for a single product, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestPricedOffersForASIN.html
-func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) (mwsHttps.Result, error) {
+func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetLowestPricedOffersForASIN",
 		"ASIN":          asin,
@@ -214,16 +214,16 @@ func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) (mwsH
 	structedParams, err := params.Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns pricing information for your own offer listings, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForSKU.html
-func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...mwsHttps.Parameters) (mwsHttps.Result, error) {
+func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
 	op := gomws.OptionalParams([]string{"itemCondition"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetMyPriceForSKU",
@@ -233,16 +233,16 @@ func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...mwsHttps.
 	structedParams, err := params.StructureKeys("SellerSKUList", "SellerSKU").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns pricing information for your own offer listings, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForASIN.html
-func (p Products) GetMyPriceForASIN(asinList []string, optional ...mwsHttps.Parameters) (mwsHttps.Result, error) {
+func (p Products) GetMyPriceForASIN(asinList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
 	op := gomws.OptionalParams([]string{"itemCondition"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetMyPriceForASIN",
@@ -252,16 +252,16 @@ func (p Products) GetMyPriceForASIN(asinList []string, optional ...mwsHttps.Para
 	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns the parent product categories that a product belongs to, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetProductCategoriesForSKU.html
-func (p Products) GetProductCategoriesForSKU(sellerSKU string) (mwsHttps.Result, error) {
+func (p Products) GetProductCategoriesForSKU(sellerSKU string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetProductCategoriesForSKU",
 		"SellerSKU":     sellerSKU,
@@ -270,16 +270,16 @@ func (p Products) GetProductCategoriesForSKU(sellerSKU string) (mwsHttps.Result,
 	structedParams, err := params.Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }
 
 // Returns the parent product categories that a product belongs to, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetProductCategoriesForASIN.html
-func (p Products) GetProductCategoriesForASIN(asin string) (mwsHttps.Result, error) {
+func (p Products) GetProductCategoriesForASIN(asin string) *mwsHttps.Response {
 	params := mwsHttps.Parameters{
 		"Action":        "GetProductCategoriesForASIN",
 		"ASIN":          asin,
@@ -288,9 +288,9 @@ func (p Products) GetProductCategoriesForASIN(asin string) (mwsHttps.Result, err
 	structedParams, err := params.Normalize()
 
 	if err != nil {
-		return "", err
+		return &mwsHttps.Response{Error: err}
 	}
 
 	httpClient := p.HttpClient(structedParams)
-	return httpClient.Request()
+	return httpClient.Send()
 }

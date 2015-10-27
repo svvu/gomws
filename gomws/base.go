@@ -98,12 +98,9 @@ func (base MwsBase) getCredential() Credential {
 // HttpClient return an http client with pass in querys, and ready for send of
 //  request to the server
 func (base MwsBase) HttpClient(values mwsHttps.Values) *mwsHttps.Client {
-	httpClient := mwsHttps.Client{
-		Host: base.Host,
-		Path: base.Path(),
-	}
+	httpClient := mwsHttps.NewClient(base.Host, base.Path())
 	httpClient.SetParameters(values)
 	httpClient.SetSecretKey(base.getCredential().SecretKey)
 	httpClient.AugmentParameters(base.paramsToAugment())
-	return &httpClient
+	return httpClient
 }

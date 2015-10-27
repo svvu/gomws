@@ -20,7 +20,7 @@ type MwsClient interface {
 	Version() string
 	Name() string
 	NewClient() (MwsClient, error)
-	GetServiceStatus() (mwsHttps.Result, error)
+	GetServiceStatus() (mwsHttps.Response, error)
 }
 
 const (
