@@ -49,7 +49,7 @@ func (resp *Response) PrettyPrint() {
 // When the code not start with 1 or 2, false returned
 func CheckStatusCode(code int) bool {
 	scode := strconv.Itoa(code)
-	greenStatus := regexp.MustCompile(`^[1-2][0-9]{2}`)
+	greenStatus := regexp.MustCompile(`^[1-2][0-9]{2}$`)
 
 	return greenStatus.MatchString(scode)
 }
