@@ -1,30 +1,31 @@
 package main
 
 import (
-	. "./gomws"
-	"./mws/products"
-	// . "./mwsHttps"
 	"fmt"
+	"github.com/svvu/gomws/gmws"
+	"github.com/svvu/gomws/mws/products"
 )
 
 func main() {
-	config := MwsConfig{
-		SellerId:  "",
-		AuthToken: "",
-		AccessKey: "",
-		SecretKey: "",
+	config := gmws.MwsConfig{
+		SellerId:  "SellerId",
+		AuthToken: "AuthToken",
+		Region:    "US",
+
+		// Optional if set in env variable
+		AccessKey: "AKey",
+		SecretKey: "SKey",
 	}
-	products, err := products.NewClient(config)
+	productsClient, err := products.NewClient(config)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	fmt.Println("------GetServiceStatus------")
-	result, err := products.GetServiceStatus()
-	result.PrettyPrint()
-	if err != nil {
-		fmt.Println(err)
+	response := productsClient.GetServiceStatus()
+	if response.Error != nil {
+		fmt.Println(response.Error.Error())
 	}
-
+	response.PrettyPrint()
 }

@@ -3,17 +3,17 @@
 package products
 
 import (
-	"../../gomws"
-	"../../mwsHttps"
+	"github.com/svvu/gmws/gmws"
+	"github.com/svvu/gmws/mwsHttps"
 )
 
 type Products struct {
-	*gomws.MwsBase
+	*gmws.MwsBase
 }
 
-func NewClient(config gomws.MwsConfig) (*Products, error) {
+func NewClient(config gmws.MwsConfig) (*Products, error) {
 	prodcuts := new(Products)
-	base, err := gomws.NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
+	base, err := gmws.NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (p Products) GetServiceStatus() *mwsHttps.Response {
 // Optional Parameters:
 // 	queryContextId string
 func (p Products) ListMatchingProducts(query string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
-	op := gomws.OptionalParams([]string{"queryContextId"}, optional)
+	op := gmws.OptionalParams([]string{"queryContextId"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "ListMatchingProducts",
 		"Query":         query,
@@ -145,7 +145,7 @@ func (p Products) GetCompetitivePricingForASIN(asinList []string) *mwsHttps.Resp
 // 	itemCondition string
 // 	excludeMe bool
 func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
-	op := gomws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
+	op := gmws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetLowestOfferListingsForSKU",
 		"SellerSKUList": sellerSKUList,
@@ -167,7 +167,7 @@ func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional 
 // 	itemCondition string
 // 	excludeMe bool
 func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
-	op := gomws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
+	op := gmws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetLowestOfferListingsForASIN",
 		"ASINList":      asinList,
@@ -224,7 +224,7 @@ func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) *mwsH
 // Returns pricing information for your own offer listings, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForSKU.html
 func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
-	op := gomws.OptionalParams([]string{"itemCondition"}, optional)
+	op := gmws.OptionalParams([]string{"itemCondition"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetMyPriceForSKU",
 		"SellerSKUList": sellerSKUList,
@@ -243,7 +243,7 @@ func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...mwsHttps.
 // Returns pricing information for your own offer listings, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForASIN.html
 func (p Products) GetMyPriceForASIN(asinList []string, optional ...mwsHttps.Parameters) *mwsHttps.Response {
-	op := gomws.OptionalParams([]string{"itemCondition"}, optional)
+	op := gmws.OptionalParams([]string{"itemCondition"}, optional)
 	params := mwsHttps.Parameters{
 		"Action":        "GetMyPriceForASIN",
 		"ASINList":      asinList,

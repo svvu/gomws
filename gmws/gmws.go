@@ -1,7 +1,7 @@
-package gomws
+package gmws
 
 import (
-	"../mwsHttps"
+	"github.com/svvu/gomws/mwsHttps"
 	"os"
 	"strings"
 )
@@ -19,7 +19,7 @@ type MwsConfig struct {
 type MwsClient interface {
 	Version() string
 	Name() string
-	NewClient() (MwsClient, error)
+	NewClient(config gmws.MwsConfig) (MwsClient, error)
 	GetServiceStatus() (mwsHttps.Response, error)
 }
 

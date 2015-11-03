@@ -1,8 +1,8 @@
-package gomws
+package gmws
 
 import (
-	"../mwsHttps"
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/svvu/gomws/mwsHttps"
 	"strings"
 	"testing"
 )
