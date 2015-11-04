@@ -19,7 +19,7 @@ type MwsConfig struct {
 type MwsClient interface {
 	Version() string
 	Name() string
-	NewClient(config gmws.MwsConfig) (MwsClient, error)
+	NewClient(config MwsConfig) (MwsClient, error)
 	GetServiceStatus() (mwsHttps.Response, error)
 }
 

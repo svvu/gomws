@@ -3,8 +3,8 @@
 package products
 
 import (
-	"github.com/svvu/gmws/gmws"
-	"github.com/svvu/gmws/mwsHttps"
+	"github.com/svvu/gomws/gmws"
+	"github.com/svvu/gomws/mwsHttps"
 )
 
 type Products struct {

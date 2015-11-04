@@ -28,4 +28,11 @@ func main() {
 		fmt.Println(response.Error.Error())
 	}
 	response.PrettyPrint()
+
+	fmt.Println("------GetMatchingProduct------")
+	response = productsClient.GetMatchingProduct([]string{"B00ON8R5EO", "B000EVOSE4"})
+	if response.Error != nil {
+		fmt.Println(response.Error.Error())
+	}
+	response.PrettyPrint()
 }
