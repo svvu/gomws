@@ -19,15 +19,17 @@ type Values struct {
 	url.Values
 }
 
+// NewValues initilize the Values struct with default value
 func NewValues() Values {
 	return Values{url.Values{}}
 }
 
+// Encode encode the parameters and replace + by %20
 func (params Values) Encode() string {
 	return strings.Replace(params.Values.Encode(), "+", "%20", -1)
 }
 
-// The parameters pass to the gomws api.
+// Parameters is the parameters pass to the gomws api.
 type Parameters map[string]interface{}
 
 // Merge merge the target Parameters to current Parameters.

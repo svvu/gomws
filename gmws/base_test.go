@@ -1,9 +1,10 @@
 package gmws
 
 import (
+	"testing"
+
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/svvu/gomws/mwsHttps"
-	"testing"
 )
 
 var testConfig = MwsConfig{

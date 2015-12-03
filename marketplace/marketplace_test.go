@@ -1,8 +1,9 @@
 package marketplace
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestNew(t *testing.T) {

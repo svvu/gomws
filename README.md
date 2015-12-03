@@ -21,7 +21,7 @@ config := gmws.MwsConfig{
   SecretKey: "SKey",
 }
 ```
-If AccessKey and SecretKey not find in the pass in configuration, then it will try to retrieve them from env variables (**AWS_ACCESS_KEY** and **AWS_SecretKey**).
+If AccessKey and SecretKey not find in the pass in configuration, then it will try to retrieve them from env variables (**AWS_ACCESS_KEY** and **AWS_SECRET_KEY**).
 
 Create the client
 ```go

@@ -1,10 +1,11 @@
 package gmws
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/mwsHttps"
 	"strings"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
+	"github.com/svvu/gomws/mwsHttps"
 )
 
 func TestOptionalParams(t *testing.T) {

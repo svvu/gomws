@@ -1,9 +1,10 @@
 package gmws
 
 import (
-	"github.com/svvu/gomws/mwsHttps"
 	"os"
 	"strings"
+
+	"github.com/svvu/gomws/mwsHttps"
 )
 
 // The configuraton to create the gomws base.
@@ -25,7 +26,7 @@ type MwsClient interface {
 
 const (
 	EnvAccessKey = "AWS_ACCESS_KEY"
-	EnvSecretKey = "AWS_SecretKey"
+	EnvSecretKey = "AWS_SECRET_KEY"
 )
 
 type Credential struct {
