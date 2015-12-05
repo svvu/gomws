@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/svvu/gomws/gmws"
 	"github.com/svvu/gomws/mws/products"
 )
@@ -27,12 +28,14 @@ func main() {
 	if response.Error != nil {
 		fmt.Println(response.Error.Error())
 	}
-	response.PrettyPrint()
+	xmlParser := gmws.NewXmlParser(response)
+	xmlParser.PrettyPrint()
 
 	fmt.Println("------GetMatchingProduct------")
 	response = productsClient.GetMatchingProduct([]string{"B00ON8R5EO", "B000EVOSE4"})
 	if response.Error != nil {
 		fmt.Println(response.Error.Error())
 	}
-	response.PrettyPrint()
+	xmlParser = gmws.NewXmlParser(response)
+	xmlParser.PrettyPrint()
 }

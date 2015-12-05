@@ -1,9 +1,10 @@
-package mwsHttps
+package gmws
 
 import (
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/svvu/gomws/mwsHttps"
 )
 
 func TestFormatParameterKey(t *testing.T) {
@@ -28,7 +29,7 @@ func TestFormatParameterKey(t *testing.T) {
 }
 
 func TestValuesEncode(t *testing.T) {
-	values := NewValues()
+	values := mwsHttps.NewValues()
 	values.Add("key1", "a b c")
 
 	Convey("Space should be replaced by %20", t, func() {

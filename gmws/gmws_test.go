@@ -5,12 +5,11 @@ import (
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/mwsHttps"
 )
 
 func TestOptionalParams(t *testing.T) {
 	Convey("Given a valid parameters", t, func() {
-		params := []mwsHttps.Parameters{{"key1": "value1", "key2": "value2"}}
+		params := []Parameters{{"key1": "value1", "key2": "value2"}}
 
 		Convey("When accept keys are empty", func() {
 			acceptKeys := []string{}
@@ -49,7 +48,7 @@ func TestOptionalParams(t *testing.T) {
 	})
 
 	Convey("Given an emptry array of parameters", t, func() {
-		params := []mwsHttps.Parameters{{}}
+		params := []Parameters{{}}
 		acceptKeys := []string{"key1", "key2"}
 		result := OptionalParams(acceptKeys, params)
 
@@ -59,7 +58,7 @@ func TestOptionalParams(t *testing.T) {
 	})
 
 	Convey("Given array of many parameters", t, func() {
-		params := []mwsHttps.Parameters{
+		params := []Parameters{
 			{"key1": "value1", "key2": "value2"},
 			{"key2": "value22", "key3": "value3"},
 			{"key4": "value4", "key5": "value5"},

@@ -91,9 +91,9 @@ func (base MwsBase) paramsToAugment() map[string]string {
 func (base MwsBase) getCredential() Credential {
 	if base.accessKey != "" && base.secretKey != "" {
 		return Credential{base.accessKey, base.secretKey}
-	} else {
-		return GetCredential()
 	}
+
+	return GetCredential()
 }
 
 // HttpClient return an http client with pass in querys, and ready for send of

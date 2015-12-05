@@ -7,7 +7,7 @@ import (
 	"github.com/svvu/gomws/mwsHttps"
 )
 
-// The configuraton to create the gomws base.
+// MwsConfig is configuraton to create the gomws base.
 // AccessKey and SecretKey are optional, bette to set them in evn variables.
 type MwsConfig struct {
 	SellerId  string
@@ -25,8 +25,8 @@ type MwsClient interface {
 }
 
 const (
-	EnvAccessKey = "AWS_ACCESS_KEY"
-	EnvSecretKey = "AWS_SECRET_KEY"
+	envAccessKey = "AWS_ACCESS_KEY"
+	envSecretKey = "AWS_SECRET_KEY"
 )
 
 type Credential struct {
@@ -37,8 +37,8 @@ type Credential struct {
 // GetCredential get the credential from evn variables.
 func GetCredential() Credential {
 	credential := Credential{}
-	credential.AccessKey = os.Getenv(EnvAccessKey)
-	credential.SecretKey = os.Getenv(EnvSecretKey)
+	credential.AccessKey = os.Getenv(envAccessKey)
+	credential.SecretKey = os.Getenv(envSecretKey)
 
 	return credential
 }
@@ -58,16 +58,16 @@ func GetCredential() Credential {
 // 		resultParams := OptionalParams(acceptKeys, ps)
 // result:
 // 		resultParams -> {"Key1": "newValue1", "Key2": "value2"}
-func OptionalParams(acceptKeys []string, ops []mwsHttps.Parameters) mwsHttps.Parameters {
-	param := mwsHttps.Parameters{}
-	op := mwsHttps.Parameters{}
+func OptionalParams(acceptKeys []string, ops []Parameters) Parameters {
+	param := Parameters{}
+	op := Parameters{}
 
 	if len(ops) == 0 {
 		return param
-	} else {
-		for _, p := range ops {
-			op.Merge(p)
-		}
+	}
+
+	for _, p := range ops {
+		op.Merge(p)
 	}
 
 	for _, key := range acceptKeys {

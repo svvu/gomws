@@ -15,20 +15,22 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var (
-	testParams = Parameters{
-		"Action":           "GetMyPriceForASIN",
-		"SellerId":         "SellerID",
-		"AWSAccessKeyId":   "AccessKey",
-		"MWSAuthToken":     "AuthToken",
-		"SignatureVersion": "2",
-		"Timestamp":        "2015-10-20T22:46:07Z",
-		"Version":          "2011-10-01",
-		"SignatureMethod":  "HmacSHA256",
-		"MarketplaceId":    "Marketplace",
-		"ASINList.ASIN.1":  "ASIN",
-	}
+func getTestParams() Values {
+	return Values{url.Values{
+		"Action":           []string{"GetMyPriceForASIN"},
+		"SellerId":         []string{"SellerID"},
+		"AWSAccessKeyId":   []string{"AccessKey"},
+		"MWSAuthToken":     []string{"AuthToken"},
+		"SignatureVersion": []string{"2"},
+		"Timestamp":        []string{"2015-10-20T22:46:07Z"},
+		"Version":          []string{"2011-10-01"},
+		"SignatureMethod":  []string{"HmacSHA256"},
+		"MarketplaceId":    []string{"Marketplace"},
+		"ASINList.ASIN.1":  []string{"ASIN"},
+	}}
+}
 
+var (
 	expectedParams = "ASINList.ASIN.1=ASIN&AWSAccessKeyId=AccessKey&" +
 		"Action=GetMyPriceForASIN&MWSAuthToken=AuthToken&MarketplaceId=Marketplace&" +
 		"SellerId=SellerID&SignatureMethod=HmacSHA256&SignatureVersion=2&" +
@@ -63,8 +65,7 @@ func TestCalculateStringToSignV2(t *testing.T) {
 	httpClient := NewClient("mws.amazonservices.com", "/Products/2011-10-01")
 	expectedString := "POST\nmws.amazonservices.com\n" +
 		"/Products/2011-10-01\n" + expectedParams
-	params, _ := testParams.Normalize()
-	httpClient.SetParameters(params)
+	httpClient.SetParameters(getTestParams())
 
 	stringToSign := httpClient.calculateStringToSignV2()
 	Convey("Expect string returned", t, func() {
@@ -75,8 +76,7 @@ func TestCalculateStringToSignV2(t *testing.T) {
 func TestSignature(t *testing.T) {
 	httpClient := NewClient("mws.amazonservices.com", "/Products/2011-10-01")
 	expectedString := "MSwoBGqrM1h7IqQ8QIZo3sNvCKuV3zvTUKO%2FFAAWNt0%3D"
-	params, _ := testParams.Normalize()
-	httpClient.SetParameters(params)
+	httpClient.SetParameters(getTestParams())
 
 	signature := url.QueryEscape(httpClient.signature("SecretKey"))
 	Convey("Expect string returned", t, func() {
@@ -86,8 +86,7 @@ func TestSignature(t *testing.T) {
 
 func TestSignQuery(t *testing.T) {
 	httpClient := NewClient("mws.amazonservices.com", "/Products/2011-10-01")
-	params, _ := testParams.Normalize()
-	httpClient.SetParameters(params)
+	httpClient.SetParameters(getTestParams())
 
 	httpClient.SignQuery("SecretKey")
 	Convey("Signature added to parameters", t, func() {
@@ -131,8 +130,7 @@ func TestAugmentParameters(t *testing.T) {
 
 func TestBuildRequest(t *testing.T) {
 	httpClient := NewClient("mws.amazonservices.com", "/Products/2011-10-01")
-	params, _ := testParams.Normalize()
-	httpClient.SetParameters(params)
+	httpClient.SetParameters(getTestParams())
 
 	request, err := httpClient.buildRequest()
 

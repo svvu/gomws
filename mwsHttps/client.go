@@ -5,11 +5,28 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
-// http client wrapper to handle request to mws.
+// Values is url.Values for custom encoding.
+type Values struct {
+	url.Values
+}
+
+// NewValues initilize the Values struct with default value
+func NewValues() Values {
+	return Values{url.Values{}}
+}
+
+// Encode encode the parameters and replace + by %20
+func (params Values) Encode() string {
+	return strings.Replace(params.Values.Encode(), "+", "%20", -1)
+}
+
+// Client is http client wrapper to handle request to mws.
 type Client struct {
 	// The host of the end point
 	Host string
@@ -119,11 +136,11 @@ func (client *Client) buildRequest() (*http.Request, error) {
 // Send send the http request to mws server.
 // If the query is indicated un signed, an error will return.
 func (client *Client) Send() *Response {
-	response := Response{}
+	response := new(Response)
 	signatureErr := client.checkSignStatus()
 	if signatureErr != nil {
 		response.Error = signatureErr
-		return &response
+		return response
 	}
 
 	if client.Client == nil {
@@ -133,17 +150,17 @@ func (client *Client) Send() *Response {
 	req, err := client.buildRequest()
 	if err != nil {
 		response.Error = err
-		return &response
+		return response
 	}
 
 	resp, err := client.Client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
 		response.Error = err
-		return &response
+		return response
 	}
 
-	return client.parseResponse(&response, resp)
+	return client.parseResponse(response, resp)
 }
 
 func (client *Client) parseResponse(response *Response, resp *http.Response) *Response {
