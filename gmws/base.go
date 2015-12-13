@@ -7,6 +7,7 @@ import (
 	"github.com/svvu/gomws/mwsHttps"
 )
 
+// MwsBase contains the basic information for the api client
 type MwsBase struct {
 	SellerId      string // Seller's Amazon id
 	AuthToken     string // Auth token for developer to use the api
@@ -19,7 +20,9 @@ type MwsBase struct {
 	secretKey     string
 }
 
-// sellerId, authToken, region string
+// NewMwsBase create a new mws base
+// MwsConfig is the configuration struct
+// 	SellerId, AuthToken, Region string
 func NewMwsBase(config MwsConfig, version, name string) (*MwsBase, error) {
 	if config.SellerId == "" {
 		return nil, fmt.Errorf("No seller id provided")
@@ -53,6 +56,7 @@ func NewMwsBase(config MwsConfig, version, name string) (*MwsBase, error) {
 	return &base, nil
 }
 
+// Path generate the url path to the api endpoint
 func (base MwsBase) Path() string {
 	path := ""
 	if base.Name != "" {
@@ -64,10 +68,12 @@ func (base MwsBase) Path() string {
 	return path
 }
 
+// SignatureMethod return the HmacSHA256 signature method string
 func (base MwsBase) SignatureMethod() string {
 	return "HmacSHA256"
 }
 
+// SignatureVersion return version 2
 func (base MwsBase) SignatureVersion() string {
 	return "2"
 }
@@ -96,12 +102,24 @@ func (base MwsBase) getCredential() Credential {
 	return GetCredential()
 }
 
-// HttpClient return an http client with pass in querys, and ready for send of
+// HTTPClient return an http client with pass in querys, and ready for send of
 //  request to the server
-func (base MwsBase) HttpClient(values mwsHttps.Values) *mwsHttps.Client {
+func (base MwsBase) HTTPClient(values mwsHttps.Values) *mwsHttps.Client {
 	httpClient := mwsHttps.NewClient(base.Host, base.Path())
 	httpClient.SetParameters(values)
 	httpClient.SetSecretKey(base.getCredential().SecretKey)
 	httpClient.AugmentParameters(base.paramsToAugment())
 	return httpClient
+}
+
+// SendRequest accept a structured params and send the request to the api
+func (base MwsBase) SendRequest(structuredParams Parameters) *mwsHttps.Response {
+	normalizedParams, err := structuredParams.Normalize()
+
+	if err != nil {
+		return &mwsHttps.Response{Error: err}
+	}
+
+	httpClient := base.HTTPClient(normalizedParams)
+	return httpClient.Send()
 }

@@ -1,4 +1,4 @@
-//Reference http://docs.developer.amazonservices.com/en_US/products/Products_Overview.html
+// Reference http://docs.developer.amazonservices.com/en_US/products/Products_Overview.html
 
 package products
 
@@ -39,14 +39,7 @@ func (p Products) GetServiceStatus() *mwsHttps.Response {
 	params := gmws.Parameters{
 		"Action": "GetServiceStatus",
 	}
-	structedParams, err := params.Normalize()
-
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(params)
 }
 
 // ListMatchingProducts Returns a list of products and their attributes, based on a search query.
@@ -60,14 +53,8 @@ func (p Products) ListMatchingProducts(query string, optional ...gmws.Parameters
 		"Query":         query,
 		"MarketplaceId": p.MarketPlaceId,
 	}.Merge(op)
-	structedParams, err := params.Normalize()
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(params)
 }
 
 // GetMatchingProduct Returns a list of products and their attributes, based on a list of ASIN values.
@@ -78,14 +65,9 @@ func (p Products) GetMatchingProduct(asinList []string) *mwsHttps.Response {
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
+	structuredParams := params.StructureKeys("ASINList", "ASIN")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetMatchingProductForID Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
@@ -97,14 +79,9 @@ func (p Products) GetMatchingProductForID(idType string, idList []string) *mwsHt
 		"IdList":        idList,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.StructureKeys("IdList", "Id").Normalize()
+	structuredParams := params.StructureKeys("IdList", "Id")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetCompetitivePricingForSKU Returns the current competitive price of a product, based on SellerSKU.
@@ -115,14 +92,9 @@ func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) *mwsHttps.
 		"SellerSKUList": sellerSKUList,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.StructureKeys("SellerSKUList", "SellerSKU").Normalize()
+	structuredParams := params.StructureKeys("SellerSKUList", "SellerSKU")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetCompetitivePricingForASIN Returns the current competitive price of a product, based on ASIN.
@@ -133,14 +105,9 @@ func (p Products) GetCompetitivePricingForASIN(asinList []string) *mwsHttps.Resp
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
+	structuredParams := params.StructureKeys("ASINList", "ASIN")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetLowestOfferListingsForSKU Returns pricing information for the lowest-price active offer listings for up to 20 products, based on SellerSKU.
@@ -155,14 +122,9 @@ func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional 
 		"SellerSKUList": sellerSKUList,
 		"MarketplaceId": p.MarketPlaceId,
 	}.Merge(op)
-	structedParams, err := params.StructureKeys("SellerSKUList", "SellerSKU").Normalize()
+	structuredParams := params.StructureKeys("SellerSKUList", "SellerSKU")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetLowestOfferListingsForASIN Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
@@ -177,14 +139,9 @@ func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...g
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
 	}.Merge(op)
-	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
+	structuredParams := params.StructureKeys("ASINList", "ASIN")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetLowestPricedOffersForSKU Returns lowest priced offers for a single product, based on SellerSKU.
@@ -196,14 +153,8 @@ func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) *
 		"ItemCondition": itemCondition,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.Normalize()
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(params)
 }
 
 // GetLowestPricedOffersForASIN Returns lowest priced offers for a single product, based on ASIN.
@@ -215,14 +166,8 @@ func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) *mwsH
 		"ItemCondition": itemCondition,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.Normalize()
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(params)
 }
 
 // GetMyPriceForSKU Returns pricing information for your own offer listings, based on SellerSKU.
@@ -234,14 +179,9 @@ func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...gmws.Para
 		"SellerSKUList": sellerSKUList,
 		"MarketplaceId": p.MarketPlaceId,
 	}.Merge(op)
-	structedParams, err := params.StructureKeys("SellerSKUList", "SellerSKU").Normalize()
+	structuredParams := params.StructureKeys("SellerSKUList", "SellerSKU")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetMyPriceForASIN Returns pricing information for your own offer listings, based on ASIN.
@@ -253,14 +193,9 @@ func (p Products) GetMyPriceForASIN(asinList []string, optional ...gmws.Paramete
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
 	}.Merge(op)
-	structedParams, err := params.StructureKeys("ASINList", "ASIN").Normalize()
+	structuredParams := params.StructureKeys("ASINList", "ASIN")
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(structuredParams)
 }
 
 // GetProductCategoriesForSKU Returns the parent product categories that a product belongs to, based on SellerSKU.
@@ -271,14 +206,8 @@ func (p Products) GetProductCategoriesForSKU(sellerSKU string) *mwsHttps.Respons
 		"SellerSKU":     sellerSKU,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.Normalize()
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(params)
 }
 
 // GetProductCategoriesForASIN Returns the parent product categories that a product belongs to, based on ASIN.
@@ -289,12 +218,6 @@ func (p Products) GetProductCategoriesForASIN(asin string) *mwsHttps.Response {
 		"ASIN":          asin,
 		"MarketplaceId": p.MarketPlaceId,
 	}
-	structedParams, err := params.Normalize()
 
-	if err != nil {
-		return &mwsHttps.Response{Error: err}
-	}
-
-	httpClient := p.HttpClient(structedParams)
-	return httpClient.Send()
+	return p.SendRequest(params)
 }

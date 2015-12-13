@@ -137,7 +137,7 @@ func TestGetCredential(t *testing.T) {
 func TestHttpClient(t *testing.T) {
 	client, _ := NewMwsBase(testConfig, "V1", "Test")
 	params := mwsHttps.NewValues()
-	httpClient := client.HttpClient(params)
+	httpClient := client.HTTPClient(params)
 
 	Convey("Http client has expected host", t, func() {
 		So(httpClient.Host, ShouldEqual, "mws.amazonservices.com")
