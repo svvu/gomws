@@ -10,16 +10,20 @@ import (
 	"github.com/svvu/gomws/mwsHttps"
 )
 
-type XmlParser struct {
-	XmlString string
+// XMLParser use parse the xml string
+type XMLParser struct {
+	XMLString string
 }
 
-func NewXmlParser(response *mwsHttps.Response) *XmlParser {
-	return &XmlParser{XmlString: response.Result}
+// NewXMLParser Create a new parse for the response, seting the response result to XMLString
+func NewXMLParser(response *mwsHttps.Response) *XMLParser {
+	return &XMLParser{XMLString: response.Result}
 }
 
-func (xmlp *XmlParser) PrettyPrint() {
-	decoder := xml.NewDecoder(strings.NewReader(xmlp.XmlString))
+// PrettyPrint Print the xml in indent format.
+// Note: The method will ignore namespace, attributes, comments for the tag
+func (xmlp *XMLParser) PrettyPrint() {
+	decoder := xml.NewDecoder(strings.NewReader(xmlp.XMLString))
 	decoder.Strict = false
 
 	rBuffer := &bytes.Buffer{}
@@ -42,4 +46,9 @@ func (xmlp *XmlParser) PrettyPrint() {
 	}
 
 	fmt.Println(string(rBuffer.Bytes()))
+}
+
+// Parse unmarshal the xml string to target struct
+func (xmlp *XMLParser) Parse(v interface{}) error {
+	return xml.Unmarshal([]byte(xmlp.XMLString), v)
 }
