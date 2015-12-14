@@ -32,26 +32,28 @@ func (params Parameters) Merge(parameters Parameters) Parameters {
 //
 // If the value is a slice, then additonal index will be used to augument the keys.
 // Ex:
-// p := Parameters{
+// 	p := Parameters{
 // 		"slice": []string{"a", "b"},
-// }
-// p.StructureKeys("arrayFiled", "fields")
-// -> Parameters{
+// 	}
+// 	p.StructureKeys("arrayFiled", "fields")
+// result:
+// 	Parameters{
 // 		"slice.fields.1": "a",
 // 		"slice.fields.2": "a",
-// }
+// 	}
 //
 // If the value is another Parameters, the Parameters' keys will used to augument.
 // the keys
 // Ex:
-// p := Parameters{
+// 	p := Parameters{
 // 		"params": Parameters{"a": 1, "b": 2},
-// }
-// p.StructureKeys("params", "fields")
-// -> Parameters{
+// 	}
+// 	p.StructureKeys("params", "fields")
+// result:
+// 	Parameters{
 // 		"params.fields.a": 1,
 // 		"params.fields.b": 2,
-// }
+//	}
 //
 // If the value is other type, other keys will be used to structure the keys.
 func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameters {
@@ -86,7 +88,7 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 }
 
 // Normalize convert all the values to string, if a value can't not
-// 	convert to string, an error will be returned.
+// convert to string, an error will be returned.
 // Float will round to 2 decimal precision.
 func (params Parameters) Normalize() (mwsHttps.Values, error) {
 	nParams := mwsHttps.NewValues()
