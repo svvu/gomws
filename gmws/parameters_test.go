@@ -2,6 +2,7 @@ package gmws
 
 import (
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/svvu/gomws/mwsHttps"
@@ -208,6 +209,15 @@ func TestParametersNormalize(t *testing.T) {
 			resultParam, err := params.Normalize()
 			So(err, ShouldBeNil)
 			So(resultParam.Get("stringKey"), ShouldEqual, "A string")
+		})
+	})
+
+	Convey("When value is time", t, func() {
+		params := Parameters{"timeKey": time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC)}
+		Convey("Value convert to iso8601 formatted string", func() {
+			resultParam, err := params.Normalize()
+			So(err, ShouldBeNil)
+			So(resultParam.Get("timeKey"), ShouldEqual, "2009-11-10T23:00:00Z")
 		})
 	})
 
