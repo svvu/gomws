@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/svvu/gomws/mwsHttps"
 )
@@ -106,6 +107,9 @@ func (params Parameters) Normalize() (mwsHttps.Values, error) {
 			stringVal = strconv.FormatFloat(val.(float64), 'f', 2, 64)
 		case string:
 			stringVal = val.(string)
+		case time.Time:
+			isoT := val.(time.Time)
+			stringVal = isoT.UTC().Format(time.RFC3339) // "2006-01-02T15:04:05Z07:00"
 		}
 		nParams.Set(key, stringVal)
 	}
