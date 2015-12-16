@@ -9,8 +9,7 @@
         <ASIN>BT0093TELA</ASIN>
         <OrderItemId>68828574383266</OrderItemId>
         <BuyerCustomizedInfo>
-          <CustomizedURL>https://zme-caps.amazon.com/t/bR6qHkzSOxuB/
-J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1</CustomizedURL>
+          <CustomizedURL>https://zme-caps.amazon.com/t/bR6qHkzSOxuB/J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1</CustomizedURL>
         </BuyerCustomizedInfo>
         <SellerSKU>CBA_OTF_1</SellerSKU>
         <Title>Example item name</Title>
@@ -31,10 +30,8 @@ J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1</CustomizedURL>
           <CurrencyCode>JPY</CurrencyCode>
           <Amount>1.26</Amount>
         </ShippingPrice>
-        <ScheduledDeliveryEndDate>2013-09-09T01:30:00.000-06:00
-        </ScheduledDeliveryEndDate>
-        <ScheduledDeliveryStartDate>2013-09-071T02:00:00.000-06:00
-        </ScheduledDeliveryStartDate>
+        <ScheduledDeliveryEndDate>2013-09-09T01:30:00.000-06:00</ScheduledDeliveryEndDate>
+        <ScheduledDeliveryStartDate>2013-09-071T02:00:00.000-06:00</ScheduledDeliveryStartDate>
         <CODFee>
           <CurrencyCode>JPY</CurrencyCode>
           <Amount>10.00</Amount>

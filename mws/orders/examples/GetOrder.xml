@@ -53,8 +53,7 @@ Orders/2013-09-01">
         <MarketplaceId>ATVPDKIKX0DER</MarketplaceId>
         <BuyerName>Jane Smith</BuyerName>
         <BuyerEmail>5vlhEXAMPLEh9h5@marketplace.amazon.com</BuyerEmail>
-        <ShipmentServiceLevelCategory>Standard
-        </ShipmentServiceLevelCategory>
+        <ShipmentServiceLevelCategory>Standard</ShipmentServiceLevelCategory>
         <IsBusinessOrder>false</IsBusinessOrder>
         <IsPrime>false</IsPrime>
         <IsPremiumOrder>false</IsPremiumOrder>

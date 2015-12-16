@@ -23,6 +23,7 @@ type ListOrdersByNextTokenResult struct {
 // GetOrderResult the result for the GetOrder operation.
 type GetOrderResult struct {
 	XMLName           xml.Name `xml:"GetOrderResponse"`
+	NextToken         string   `xml:"GetOrderResult>NextToken"`
 	CreatedBefore     string   `xml:"GetOrderResult>CreatedBefore"`
 	LastUpdatedBefore string   `xml:"GetOrderResult>LastUpdatedBefore"`
 	Orders            []Order  `xml:"GetOrderResult>Orders>Order"`
@@ -186,7 +187,7 @@ type OrderItem struct {
 	ShippingDiscount Money
 	// The total of all promotional discounts in the offer.
 	PromotionDiscount Money
-	PromotionIds      []string `xml:>PromotionId`
+	PromotionIds      []string `xml:">PromotionId"`
 	// The fee charged for COD service. CODFee is a response element only in Japan (JP).
 	CODFee Money
 	// The discount on the COD fee. CODFeeDiscount is a response element only in Japan (JP).

@@ -5,8 +5,7 @@
     <LastUpdatedBefore>2013-09-25T18%3A10%3A21.687Z</LastUpdatedBefore>
     <Orders>
       <Order>
-        <ShipmentServiceLevelCategory>Standard
-        </ShipmentServiceLevelCategory>
+        <ShipmentServiceLevelCategory>Standard</ShipmentServiceLevelCategory>
         <ShipServiceLevel>Std JP Kanto8</ShipServiceLevel>
         <EarliestShipDate>2013-08-20T19:51:16Z</EarliestShipDate>
         <LatestShipDate>2013-08-25T19:49:35Z</LatestShipDate>
@@ -76,8 +75,7 @@
         <MarketplaceId>ATVPDKIKX0DER</MarketplaceId>
         <BuyerName>Jane Smith</BuyerName>
         <BuyerEmail>5vlhEXAMPLEh9h5@marketplace.amazon.com</BuyerEmail>
-        <ShipmentServiceLevelCategory>Standard
-        </ShipmentServiceLevelCategory>
+        <ShipmentServiceLevelCategory>Standard</ShipmentServiceLevelCategory>
         <IsBusinessOrder>false</IsBusinessOrder>
         <IsPrime>false</IsPrime>
         <IsPremiumOrder>false</IsPremiumOrder>

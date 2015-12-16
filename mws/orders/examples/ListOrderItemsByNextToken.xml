@@ -20,10 +20,8 @@
           <CurrencyCode>USD</CurrencyCode>
           <Amount>1.26</Amount>
         </ShippingPrice>
-        <ScheduledDeliveryEndDate>2013-09-091T01:30:00.000-06:00
-        </ScheduledDeliveryEndDate>
-        <ScheduledDeliveryStartDate>2013-09-06T02:00:00.000-06:00
-        </ScheduledDeliveryStartDate>
+        <ScheduledDeliveryEndDate>2013-09-091T01:30:00.000-06:00</ScheduledDeliveryEndDate>
+        <ScheduledDeliveryStartDate>2013-09-06T02:00:00.000-06:00</ScheduledDeliveryStartDate>
         <CODFee>
           <CurrencyCode>USD</CurrencyCode>
           <Amount>10.00</Amount>
