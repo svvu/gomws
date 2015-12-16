@@ -28,7 +28,7 @@ func main() {
 	if response.Error != nil {
 		fmt.Println(response.Error.Error())
 	}
-	xmlParser := gmws.NewXmlParser(response)
+	xmlParser := gmws.NewXMLParser(response)
 	xmlParser.PrettyPrint()
 
 	fmt.Println("------GetMatchingProduct------")
@@ -36,6 +36,6 @@ func main() {
 	if response.Error != nil {
 		fmt.Println(response.Error.Error())
 	}
-	xmlParser = gmws.NewXmlParser(response)
+	xmlParser = gmws.NewXMLParser(response)
 	xmlParser.PrettyPrint()
 }
