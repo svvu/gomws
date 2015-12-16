@@ -43,11 +43,11 @@ func (p Products) GetServiceStatus() *mwsHttps.Response {
 }
 
 // ListMatchingProducts Returns a list of products and their attributes, based on a search query.
-// http://docs.developer.amazonservices.com/en_US/products/Products_ListMatchingProducts.html
 // Optional Parameters:
-// 	queryContextId string
+// 	QueryContextId - string
+// http://docs.developer.amazonservices.com/en_US/products/Products_ListMatchingProducts.html
 func (p Products) ListMatchingProducts(query string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"queryContextId"}, optional)
+	op := gmws.OptionalParams([]string{"QueryContextId"}, optional)
 	params := gmws.Parameters{
 		"Action":        "ListMatchingProducts",
 		"Query":         query,
@@ -111,12 +111,12 @@ func (p Products) GetCompetitivePricingForASIN(asinList []string) *mwsHttps.Resp
 }
 
 // GetLowestOfferListingsForSKU Returns pricing information for the lowest-price active offer listings for up to 20 products, based on SellerSKU.
-// http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestOfferListingsForSKU.html
 // Optional Parameters:
-// 	itemCondition string
-// 	excludeMe bool
+// 	ItemCondition - string
+// 	ExcludeMe - bool
+// http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestOfferListingsForSKU.html
 func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
+	op := gmws.OptionalParams([]string{"ItemCondition", "ExcludeMe"}, optional)
 	params := gmws.Parameters{
 		"Action":        "GetLowestOfferListingsForSKU",
 		"SellerSKUList": sellerSKUList,
@@ -128,12 +128,12 @@ func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional 
 }
 
 // GetLowestOfferListingsForASIN Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
-// http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestOfferListingsForASIN.html
 // Optional Parameters:
-// 	itemCondition string
-// 	excludeMe bool
+// 	ItemCondition - string
+// 	ExcludeMe - bool
+// http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestOfferListingsForASIN.html
 func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"itemCondition", "excludeMe"}, optional)
+	op := gmws.OptionalParams([]string{"ItemCondition", "ExcludeMe"}, optional)
 	params := gmws.Parameters{
 		"Action":        "GetLowestOfferListingsForASIN",
 		"ASINList":      asinList,
@@ -173,7 +173,7 @@ func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) *mwsH
 // GetMyPriceForSKU Returns pricing information for your own offer listings, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForSKU.html
 func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"itemCondition"}, optional)
+	op := gmws.OptionalParams([]string{"ItemCondition"}, optional)
 	params := gmws.Parameters{
 		"Action":        "GetMyPriceForSKU",
 		"SellerSKUList": sellerSKUList,
@@ -187,7 +187,7 @@ func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...gmws.Para
 // GetMyPriceForASIN Returns pricing information for your own offer listings, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForASIN.html
 func (p Products) GetMyPriceForASIN(asinList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"itemCondition"}, optional)
+	op := gmws.OptionalParams([]string{"ItemCondition"}, optional)
 	params := gmws.Parameters{
 		"Action":        "GetMyPriceForASIN",
 		"ASINList":      asinList,
