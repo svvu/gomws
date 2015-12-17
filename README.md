@@ -35,18 +35,31 @@ response := productsClient.GetMatchingProduct([]string{"ASIN"})
 if response.Error != nil {
 	fmt.Println(response.Error.Error())
 }
-// result is xml response in string
-fmt.Println(response.Result)
+// result() is xml response in string
+fmt.Println(response.Result())
+```
+
+Use parser to convert result to struct.
+Ex: ListOrders response from orders api
+```go
+xmlParser := gmws.NewXMLParser(response)
+xmlParser.PrettyPrint()
+resultStruct := ListOrdersResult{}
+xmlParser.Parse(&resultStruct)
+resultStruct.Orders
 ```
 
 # APIs
-Currently only support Products
 
 ## Products
 The Products API helps to get information to match your products to existing product listings on Amazon Marketplace websites.
 
 The Products API returns product attributes, current Marketplace pricing information, and a variety of other product and listing information.
 
+## Orders
+The Orders API helps to retrieve orders information on Amazon Marketplace.
+
+The Orders API returns orders list, items info in the order, and a variety of other orders information.
+
 # TODO
 * Add support for other APIs
-* Add feature for response to convert result xml string to struct/json
