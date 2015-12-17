@@ -16,6 +16,33 @@ var testConfig = MwsConfig{
 }
 
 func TestNewMwsBase(t *testing.T) {
+	Convey("When Region is not provide", t, func() {
+		testConfig.Region = ""
+		client, _ := NewMwsBase(testConfig, "V1", "Test")
+
+		Convey("Region defualt to US", func() {
+			So(client.Region, ShouldEqual, "US")
+		})
+
+		testConfig.Region = "US"
+	})
+
+	Convey("When Unknow Region is provide", t, func() {
+		testConfig.Region = "UnKnown"
+		client, err := NewMwsBase(testConfig, "V1", "Test")
+
+		Convey("Nil Client returned", func() {
+			So(client, ShouldBeNil)
+		})
+
+		Convey("MarketPlace error returned", func() {
+			So(err, ShouldNotBeNil)
+			So(err.Error(), ShouldEqual, "Invalid region: UnKnown")
+		})
+
+		testConfig.Region = "US"
+	})
+
 	Convey("When Seller Id is not provide", t, func() {
 		testConfig.SellerId = ""
 		client, err := NewMwsBase(testConfig, "V1", "Test")

@@ -10,7 +10,7 @@ import (
 
 func TestListOrderItemsByNextTokenResult(t *testing.T) {
 	Convey("Request result", t, func() {
-		resp := &mwsHttps.Response{Result: loadExample("ListOrderItemsByNextToken")}
+		resp := &mwsHttps.Response{Body: []byte(loadExample("ListOrderItemsByNextToken"))}
 		xmlParser := gmws.NewXMLParser(resp)
 		loiResult := ListOrderItemsByNextTokenResult{}
 		xmlParser.Parse(&loiResult)

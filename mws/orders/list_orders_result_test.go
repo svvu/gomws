@@ -16,7 +16,7 @@ func loadExample(name string) string {
 
 func TestListOrdersResult(t *testing.T) {
 	Convey("Request result", t, func() {
-		resp := &mwsHttps.Response{Result: loadExample("ListOrders")}
+		resp := &mwsHttps.Response{Body: []byte(loadExample("ListOrders"))}
 		xmlParser := gmws.NewXMLParser(resp)
 		loiResult := ListOrdersResult{}
 		xmlParser.Parse(&loiResult)

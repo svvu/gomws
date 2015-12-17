@@ -42,6 +42,7 @@ type Client struct {
 	*http.Client
 }
 
+// NewClient is a wapper for http client
 func NewClient(host, path string) *Client {
 	return &Client{
 		Host:   host,
@@ -54,9 +55,8 @@ func (client *Client) checkSignStatus() error {
 	if !client.signed {
 		if client.signatureKey == "" {
 			return fmt.Errorf("Query not signed, unknow secret key")
-		} else {
-			client.SignQuery(client.signatureKey)
 		}
+		client.SignQuery(client.signatureKey)
 	}
 	return nil
 }
@@ -110,6 +110,7 @@ func (client *Client) AugmentParameters(params map[string]string) {
 	client.signed = false
 }
 
+// EndPoint generate the url for the operation
 func (client *Client) EndPoint() string {
 	return "https://" + client.Host + client.Path
 }
@@ -143,6 +144,8 @@ func (client *Client) Send() *Response {
 		return response
 	}
 
+	response.RequestHeader = client.parameters.Encode()
+
 	if client.Client == nil {
 		client.Client = &http.Client{}
 	}
@@ -166,6 +169,8 @@ func (client *Client) Send() *Response {
 func (client *Client) parseResponse(response *Response, resp *http.Response) *Response {
 	response.Status = resp.Status
 	response.StatusCode = resp.StatusCode
+	response.Header = resp.Header
+
 	if !CheckStatusCode(resp.StatusCode) {
 		response.Error = fmt.Errorf("Request not success. Reason: %v", resp.Status)
 	}
@@ -175,13 +180,13 @@ func (client *Client) parseResponse(response *Response, resp *http.Response) *Re
 		response.Error = err
 		return response
 	}
-
-	response.Result = string(body)
+	response.Body = body
 	return response
 }
 
 const (
-	Iso8061Format = time.RFC3339 // "2006-01-02T15:04:05Z07:00"
+	// Iso8061Format ex: "2006-01-02T15:04:05Z07:00"
+	Iso8061Format = time.RFC3339
 )
 
 // Current timestamp in iso8061 format.

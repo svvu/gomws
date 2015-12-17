@@ -67,6 +67,15 @@ func TestParametersMerge(t *testing.T) {
 }
 
 func TestParametersStructureKeys(t *testing.T) {
+	Convey("When key not found", t, func() {
+		params := Parameters{"key": 1}
+		resultParam := params.StructureKeys("outterKey1", "param")
+
+		Convey("Nothing changed", func() {
+			So(resultParam, ShouldEqual, params)
+		})
+	})
+
 	Convey("When values is another parameters", t, func() {
 		params := Parameters{
 			"outterKey1": Parameters{

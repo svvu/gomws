@@ -17,7 +17,7 @@ type XMLParser struct {
 
 // NewXMLParser Create a new parse for the response, seting the response result to XMLString
 func NewXMLParser(response *mwsHttps.Response) *XMLParser {
-	return &XMLParser{XMLString: response.Result}
+	return &XMLParser{XMLString: response.Result()}
 }
 
 // PrettyPrint Print the xml in indent format.
