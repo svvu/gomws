@@ -10,7 +10,7 @@ import (
 
 func TestGetOrderResult(t *testing.T) {
 	Convey("Request result", t, func() {
-		resp := &mwsHttps.Response{Result: loadExample("GetOrder")}
+		resp := &mwsHttps.Response{Body: []byte(loadExample("GetOrder"))}
 		xmlParser := gmws.NewXMLParser(resp)
 		goResult := GetOrderResult{}
 		xmlParser.Parse(&goResult)
