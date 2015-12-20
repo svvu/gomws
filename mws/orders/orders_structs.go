@@ -68,9 +68,9 @@ type Order struct {
 	// The total charge for the order.
 	OrderTotal Money
 	// The number of items shipped.
-	NumberOfItemsShipped int64
+	NumberOfItemsShipped int
 	// The number of items unshipped.
-	NumberOfItemsUnshipped int64
+	NumberOfItemsUnshipped int
 	// Information about sub-payment methods for a Cash On Delivery (COD) order.
 	PaymentExecutionDetail []PaymentExecutionDetailItem `xml:">PaymentExecutionDetailItem"`
 	// The main payment method of the order.
