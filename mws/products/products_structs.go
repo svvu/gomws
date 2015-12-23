@@ -8,15 +8,54 @@ import "encoding/xml"
 
 // ListMatchingProductsResult the result for the ListMatchingProducts operation.
 type ListMatchingProductsResult struct {
-	XMLName  xml.Name  `xml:"ListMatchingProductsResponse"`
-	Products []Product `xml:"ListMatchingProductsResult>Products>Product"`
+	XMLName xml.Name        `xml:"ListMatchingProductsResponse"`
+	Results []ProductResult `xml:"ListMatchingProductsResult"`
 }
 
-// Product contains basic, relationship to other products, pricing, and offers info
+// GetMatchingProductResult the result for the GetMatchingProduct operation.
+type GetMatchingProductResult struct {
+	XMLName            xml.Name             `xml:"GetMatchingProductResponse"`
+	MatchProductResult []MatchProductResult `xml:"GetMatchingProductResult"`
+	Results            []ProductResult
+}
+
+// ParseCallback is callback trigger after finish parse.
+// The callback will move the data from MatchProductResult to Results by converting
+// MatchProductResult.Product to an array of Product in Results.
+// This method convert the result to make GetMatchingProduct's result is consition
+// with other operations. Because GetMatchingProduct return Product under result
+// tag instead of Products tag.
+func (mpr *GetMatchingProductResult) ParseCallback() {
+	results := make([]ProductResult, len(mpr.MatchProductResult))
+	for i, r := range mpr.MatchProductResult {
+		result := &results[i]
+		result.Products = []Product{r.Product}
+		result.Status = r.Status
+	}
+	mpr.Results = results
+	mpr.MatchProductResult = nil
+}
+
+// ProductResult the result from the operation, contains meta info for the result.
+// ProductResult contains one of more products.
+type ProductResult struct {
+	Products []Product `xml:">Product"`
+	Status   string    `xml:"status,attr"`
+}
+
+// MatchProductResult is the result specific for GetMatchingProductResult.
+// Its because GetMatchingProductResult return products right under reuslt tag
+// instead of Products tag.
+type MatchProductResult struct {
+	Product Product `xml:"Product"`
+	Status  string  `xml:"status,attr"`
+}
+
+// Product contains basic, relationship to other products, pricing, and offers info.
 type Product struct {
 	Identifiers         Identifiers
 	AttributeSets       []ItemAttributes `xml:">ItemAttributes"`
-	Relationships       []Relationship
+	Relationships       Relationships
 	CompetitivePricing  CompetitivePricing
 	SalesRankings       []SalesRank `xml:">SalesRank"`
 	LowestOfferListings []LowestOfferListing
@@ -29,15 +68,15 @@ type Identifiers struct {
 	SKUIdentifier   SKUIdentifier
 }
 
-// Relationship contains product variation information, if applicable.
+// Relationships contains product variation information, if applicable.
 // If your search criteria match a product that is identified by a variation
 // parent ASIN, the related VariationChild elements are contained in the Relationships
 // element.
 // If your search criteria match a specific variation child ASIN, the related
 // VariationParent element is contained in the Relationships element.
-type Relationship struct {
-	VariationParent VariationParent
-	VariationChild  VariationChild
+type Relationships struct {
+	Parents  []VariationParent `xml:"VariationParent"`
+	Children []VariationChild  `xml:"VariationChild"`
 }
 
 type CompetitivePricing struct {
@@ -46,7 +85,7 @@ type CompetitivePricing struct {
 	TradeInValue          Money
 }
 
-// SalesRank contains sales rank information for the product by product category.
+// SalesRank information for the product by product category.
 type SalesRank struct {
 	ProductCategoryId string
 	Rank              int
@@ -70,6 +109,7 @@ type Offer struct {
 	SellerSKU          string
 }
 
+// ItemAttributes is product's attributes infomation.
 type ItemAttributes struct {
 	// Lang is not attributes of the items, its the language the attributes in
 	Lang                                 string `xml:"lang,attr"`
@@ -171,21 +211,27 @@ type ItemAttributes struct {
 	WEEETaxValue                         Money
 }
 
+// MarketplaceASIN contains ASIN for the product in the Marketplace.
 type MarketplaceASIN struct {
 	MarketplaceId string
 	ASIN          string
 }
 
+// SKUIdentifier contains the SKU info for the products in the Marketplace.
 type SKUIdentifier struct {
 	MarketplaceId string
 	SellerId      string
 	SellerSKU     string
 }
 
+// VariationParent parents for the product.
+// Contains basic info for the parent product.
 type VariationParent struct {
 	Identifiers Identifiers
 }
 
+// VariationChild children for the product.
+// Contains basic info and children variation info.
 type VariationChild struct {
 	Identifiers            Identifiers
 	Color                  string
@@ -220,6 +266,7 @@ type CompetitivePrice struct {
 	BelongsToRequester bool   // attributes
 }
 
+// Price info for the product.
 type Price struct {
 	LandedPrice  Money
 	ListingPrice Money
@@ -231,6 +278,7 @@ type OfferListingCount struct {
 	Value     int
 }
 
+// DimensionType dimension info, contains Height, Weight, Length, Width.
 type DimensionType struct {
 	Height DecimalWithUnits
 	Length DecimalWithUnits
@@ -238,28 +286,33 @@ type DimensionType struct {
 	Weight DecimalWithUnits
 }
 
+// DecimalWithUnits contains the value and unit for the value.
 type DecimalWithUnits struct {
 	Units string  `xml:"Units,attr"`
 	Value float64 `xml:",chardata"`
 }
 
+// CreatorType Creator info.
 type CreatorType struct {
 	Role  string `xml:"Role,attr"`
 	Value string `xml:",chardata"`
 }
 
+// Language type.
 type Language struct {
 	Name        string
 	Type        string
 	AudioFormat string
 }
 
+// Image atrributes.
 type Image struct {
 	URL    string
 	Height DecimalWithUnits
 	Width  DecimalWithUnits
 }
 
+// Money info.
 type Money struct {
 	Amount       float64
 	CurrencyCode string

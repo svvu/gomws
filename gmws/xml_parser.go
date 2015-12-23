@@ -50,5 +50,17 @@ func (xmlp *XMLParser) PrettyPrint() {
 
 // Parse unmarshal the xml string to target struct
 func (xmlp *XMLParser) Parse(v interface{}) error {
-	return xml.Unmarshal([]byte(xmlp.XMLString), v)
+	err := xml.Unmarshal([]byte(xmlp.XMLString), v)
+
+	xrHandler, ok := v.(XMLResultHandler)
+	if ok {
+		xrHandler.ParseCallback()
+	}
+
+	return err
+}
+
+// XMLResultHandler is interface to allow parsed xml result to have callback
+type XMLResultHandler interface {
+	ParseCallback()
 }

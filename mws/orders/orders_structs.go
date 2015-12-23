@@ -154,7 +154,6 @@ type PaymentExecutionDetailItem struct {
 }
 
 // OrderItem information.
-// PointsGranted -
 type OrderItem struct {
 	ASIN string
 	// An Amazon-defined order item identifier.
