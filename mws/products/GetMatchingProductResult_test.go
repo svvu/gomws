@@ -30,8 +30,12 @@ func Test_GetMatchingProductResult(t *testing.T) {
 			So(gmpResult.Results, ShouldHaveLength, 1)
 		})
 
-		Convey("ProductResult has 1 product", func() {
+		Convey("ProductResult 1 has 1 product", func() {
 			So(gmpResult.Results[0].Products, ShouldHaveLength, 1)
+		})
+
+		Convey("ProductResult 1 status is Success", func() {
+			So(gmpResult.Results[0].Status, ShouldEqual, "Success")
 		})
 	})
 }

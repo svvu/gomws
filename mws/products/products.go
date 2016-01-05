@@ -70,9 +70,9 @@ func (p Products) GetMatchingProduct(asinList []string) *mwsHttps.Response {
 	return p.SendRequest(structuredParams)
 }
 
-// GetMatchingProductForID Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
+// GetMatchingProductForId Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMatchingProductForId.html
-func (p Products) GetMatchingProductForID(idType string, idList []string) *mwsHttps.Response {
+func (p Products) GetMatchingProductForId(idType string, idList []string) *mwsHttps.Response {
 	params := gmws.Parameters{
 		"Action":        "GetMatchingProductForId",
 		"IdType":        idType,

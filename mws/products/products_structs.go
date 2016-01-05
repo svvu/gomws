@@ -36,11 +36,19 @@ func (mpr *GetMatchingProductResult) ParseCallback() {
 	mpr.MatchProductResult = nil
 }
 
+// GetMatchingProductForIdResult the result for the GetMatchingProductForID operation.
+type GetMatchingProductForIdResult struct {
+	XMLName xml.Name        `xml:"GetMatchingProductForIdResponse"`
+	Results []ProductResult `xml:"GetMatchingProductForIdResult"`
+}
+
 // ProductResult the result from the operation, contains meta info for the result.
 // ProductResult contains one of more products.
 type ProductResult struct {
 	Products []Product `xml:">Product"`
 	Status   string    `xml:"status,attr"`
+	ID       string    `xml:"Id,attr"`
+	IDType   string    `xml:"IdType,attr"`
 }
 
 // MatchProductResult is the result specific for GetMatchingProductResult.
