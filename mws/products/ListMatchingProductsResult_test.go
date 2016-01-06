@@ -13,7 +13,7 @@ var ListMatchingProductsResponse, _ = ioutil.ReadFile(
 	"./examples/ListMatchingProducts.xml",
 )
 
-func prepareListMatchingProductsResult() ProductResult {
+func prepareListMatchingProductsResult() MultiProductsResult {
 	resp := &mwsHttps.Response{Result: string(ListMatchingProductsResponse)}
 	xmlParser := gmws.NewXMLParser(resp)
 	lmpResult := ListMatchingProductsResult{}

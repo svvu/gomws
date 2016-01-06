@@ -33,3 +33,13 @@ func dimensionsAsserter(dim DimensionType, lengthUnit, weightUnit string, expect
 		decimalWithUnitsAsserter(dim.Weight, weightUnit, expectValue["Weight"])
 	})
 }
+
+func moneyAsserter(money Money, currencyCode string, amount float64) {
+	convey.Convey("CurrencyCode is "+currencyCode, func() {
+		convey.So(money.CurrencyCode, convey.ShouldEqual, currencyCode)
+	})
+
+	convey.Convey("Amount is "+strconv.FormatFloat(amount, 'f', 2, 64), func() {
+		convey.So(money.Amount, convey.ShouldEqual, amount)
+	})
+}

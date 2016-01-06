@@ -8,53 +8,64 @@ import "encoding/xml"
 
 // ListMatchingProductsResult the result for the ListMatchingProducts operation.
 type ListMatchingProductsResult struct {
-	XMLName xml.Name        `xml:"ListMatchingProductsResponse"`
-	Results []ProductResult `xml:"ListMatchingProductsResult"`
+	XMLName xml.Name              `xml:"ListMatchingProductsResponse"`
+	Results []MultiProductsResult `xml:"ListMatchingProductsResult"`
 }
 
 // GetMatchingProductResult the result for the GetMatchingProduct operation.
 type GetMatchingProductResult struct {
-	XMLName            xml.Name             `xml:"GetMatchingProductResponse"`
-	MatchProductResult []MatchProductResult `xml:"GetMatchingProductResult"`
-	Results            []ProductResult
+	XMLName        xml.Name        `xml:"GetMatchingProductResponse"`
+	ProductResults []ProductResult `xml:"GetMatchingProductResult"`
+	Results        []MultiProductsResult
 }
 
 // ParseCallback is callback trigger after finish parse.
 // The callback will move the data from MatchProductResult to Results by converting
 // MatchProductResult.Product to an array of Product in Results.
 // This method convert the result to make GetMatchingProduct's result is consition
-// with other operations. Because GetMatchingProduct return Product under result
+// with GetMatchingProductForIdResult. Because GetMatchingProduct return Product under result
 // tag instead of Products tag.
 func (mpr *GetMatchingProductResult) ParseCallback() {
-	results := make([]ProductResult, len(mpr.MatchProductResult))
-	for i, r := range mpr.MatchProductResult {
+	results := make([]MultiProductsResult, len(mpr.ProductResults))
+	for i, r := range mpr.ProductResults {
 		result := &results[i]
 		result.Products = []Product{r.Product}
 		result.Status = r.Status
 	}
 	mpr.Results = results
-	mpr.MatchProductResult = nil
+	mpr.ProductResults = nil
 }
 
 // GetMatchingProductForIdResult the result for the GetMatchingProductForID operation.
 type GetMatchingProductForIdResult struct {
-	XMLName xml.Name        `xml:"GetMatchingProductForIdResponse"`
-	Results []ProductResult `xml:"GetMatchingProductForIdResult"`
+	XMLName xml.Name              `xml:"GetMatchingProductForIdResponse"`
+	Results []MultiProductsResult `xml:"GetMatchingProductForIdResult"`
 }
 
-// ProductResult the result from the operation, contains meta info for the result.
-// ProductResult contains one of more products.
-type ProductResult struct {
+// GetCompetitivePricingForSKUResult the result for the GetCompetitivePricingForSKU operation.
+type GetCompetitivePricingForSKUResult struct {
+	XMLName xml.Name        `xml:"GetCompetitivePricingForSKUResponse"`
+	Results []ProductResult `xml:"GetCompetitivePricingForSKUResult"`
+}
+
+// GetCompetitivePricingForASINResult the result for the GetCompetitivePricingForASIN operation.
+type GetCompetitivePricingForASINResult struct {
+	XMLName xml.Name        `xml:"GetCompetitivePricingForASINResponse"`
+	Results []ProductResult `xml:"GetCompetitivePricingForASINResult"`
+}
+
+// MultiProductsResult the result from the operation, contains meta info for the result.
+// MultiProductsResult contains one of more products.
+type MultiProductsResult struct {
 	Products []Product `xml:">Product"`
 	Status   string    `xml:"status,attr"`
 	ID       string    `xml:"Id,attr"`
 	IDType   string    `xml:"IdType,attr"`
 }
 
-// MatchProductResult is the result specific for GetMatchingProductResult.
-// Its because GetMatchingProductResult return products right under reuslt tag
-// instead of Products tag.
-type MatchProductResult struct {
+// ProductResult the result from the operation, contains meta info for the result.
+// ProductResult contains only one product.
+type ProductResult struct {
 	Product Product `xml:"Product"`
 	Status  string  `xml:"status,attr"`
 }
@@ -87,9 +98,10 @@ type Relationships struct {
 	Children []VariationChild  `xml:"VariationChild"`
 }
 
+// CompetitivePricing Contains pricing information for the product
 type CompetitivePricing struct {
-	CompetitivePrices     []CompetitivePrice
-	NumberOfOfferListings []OfferListingCount
+	CompetitivePrices     []CompetitivePrice  `xml:">CompetitivePrice"`
+	NumberOfOfferListings []OfferListingCount `xml:">OfferListingCount"`
 	TradeInValue          Money
 }
 
@@ -266,12 +278,24 @@ type VariationChild struct {
 	TotalGemWeight         DecimalWithUnits
 }
 
+// CompetitivePrice Contains pricing information.
 type CompetitivePrice struct {
+	// CompetitivePriceId the pricing model for each price that is returned.
+	// Valid values: 1, 2.
+	// Value definitions: 1 = New Buy Box Price, 2 = Used Buy Box Price.
 	CompetitivePriceId string
-	Price              Price
-	Condition          string // attributes
-	Subcondition       string // attributes
-	BelongsToRequester bool   // attributes
+	// Pricing information for a given CompetitivePriceId value.
+	Price Price
+	// Indicates the condition of the item whose pricing information is returned.
+	// Possible values are: New, Used, Collectible, Refurbished, or Club.
+	Condition string `xml:"condition,attr"`
+	// Indicates the subcondition of the item whose pricing information is returned.
+	// Possible values are:
+	// 	New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM, Warranty,
+	// 	Refurbished Warranty, Refurbished, Open Box, or Other.
+	Subcondition string `xml:"subcondition,attr"`
+	// Indicates whether or not the pricing information is for an offer listing that belongs to the requester.
+	BelongsToRequester bool `xml:"belongsToRequester,attr"`
 }
 
 // Price info for the product.
@@ -281,9 +305,12 @@ type Price struct {
 	Shipping     Money
 }
 
+// OfferListingCount The number of active offer listings.
+// The listing count is returned by condition, one for each listing condition value that is returned.
+// Possible listing condition values are: Any, New, Used, Collectible, Refurbished, or Club.
 type OfferListingCount struct {
-	Condition string // attributes
-	Value     int
+	Condition string `xml:"condition,attr"`
+	Value     int    `xml:",chardata"`
 }
 
 // DimensionType dimension info, contains Height, Weight, Length, Width.
