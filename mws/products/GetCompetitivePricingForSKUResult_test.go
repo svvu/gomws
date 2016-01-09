@@ -131,16 +131,17 @@ func Test_GetCompetitivePricingForSKUResult_Product_CompetitivePricing(t *testin
 		})
 
 		Convey("Price", func() {
+			price := cp1.Price
 			Convey("LandedPrice", func() {
-				moneyAsserter(cp1.Price.LandedPrice, "USD", 40.03)
+				moneyAsserter(price.LandedPrice, "USD", 40.03)
 			})
 
 			Convey("ListingPrice", func() {
-				moneyAsserter(cp1.Price.ListingPrice, "USD", 40.03)
+				moneyAsserter(price.ListingPrice, "USD", 40.03)
 			})
 
 			Convey("Shipping", func() {
-				moneyAsserter(cp1.Price.Shipping, "USD", 0)
+				moneyAsserter(price.Shipping, "USD", 0)
 			})
 		})
 	})
@@ -165,16 +166,17 @@ func Test_GetCompetitivePricingForSKUResult_Product_CompetitivePricing(t *testin
 		})
 
 		Convey("Price", func() {
+			price := cp2.Price
 			Convey("LandedPrice", func() {
-				moneyAsserter(cp2.Price.LandedPrice, "USD", 30.50)
+				moneyAsserter(price.LandedPrice, "USD", 30.50)
 			})
 
 			Convey("ListingPrice", func() {
-				moneyAsserter(cp2.Price.ListingPrice, "USD", 30.50)
+				moneyAsserter(price.ListingPrice, "USD", 30.50)
 			})
 
 			Convey("Shipping", func() {
-				moneyAsserter(cp2.Price.Shipping, "USD", 0)
+				moneyAsserter(price.Shipping, "USD", 0)
 			})
 		})
 	})

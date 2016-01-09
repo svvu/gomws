@@ -54,6 +54,12 @@ type GetCompetitivePricingForASINResult struct {
 	Results []ProductResult `xml:"GetCompetitivePricingForASINResult"`
 }
 
+// GetLowestOfferListingsForSKUResult the result for the GetLowestOfferListingsForSKU operation.
+type GetLowestOfferListingsForSKUResult struct {
+	XMLName xml.Name                          `xml:"GetLowestOfferListingsForSKUResponse"`
+	Results []LowestOfferListingProductResult `xml:"GetLowestOfferListingsForSKUResult"`
+}
+
 // MultiProductsResult the result from the operation, contains meta info for the result.
 // MultiProductsResult contains one of more products.
 type MultiProductsResult struct {
@@ -70,15 +76,22 @@ type ProductResult struct {
 	Status  string  `xml:"status,attr"`
 }
 
+// LowestOfferListingProductResult the result from the operation.
+// Simliar to ProductResult, but with extra fields
+type LowestOfferListingProductResult struct {
+	AllOfferListingsConsidered bool `xml:"AllOfferListingsConsidered"`
+	ProductResult
+}
+
 // Product contains basic, relationship to other products, pricing, and offers info.
 type Product struct {
 	Identifiers         Identifiers
 	AttributeSets       []ItemAttributes `xml:">ItemAttributes"`
 	Relationships       Relationships
 	CompetitivePricing  CompetitivePricing
-	SalesRankings       []SalesRank `xml:">SalesRank"`
-	LowestOfferListings []LowestOfferListing
-	Offers              []Offer
+	SalesRankings       []SalesRank          `xml:">SalesRank"`
+	LowestOfferListings []LowestOfferListing `xml:">LowestOfferListing"`
+	Offers              []Offer              `xml:">Offer"`
 }
 
 // Identifiers contains the unique identifies for a product.
@@ -111,12 +124,21 @@ type SalesRank struct {
 	Rank              int
 }
 
+// LowestOfferListing Contains pricing information for the lowest offer listing for each offer listing group.
 type LowestOfferListing struct {
-	Qualifiers                      Qualifiers
+	// Qualifiers Contains the six qualifiers:
+	// 	ItemCondition, ItemSubcondition, FulfillmentChannel, ShipsDomestically,
+	// 	ShippingTime, and SellerPositiveFeedbackRating.
+	// These qualifiers identify the offer listing group from which the lowest offer listing was taken.
+	Qualifiers Qualifiers
+	// Of the offer listings considered, this number indicates how many belonged to this offer listing group.
 	NumberOfOfferListingsConsidered int
-	SellerFeedbackCount             int
-	Price                           Price
-	MultipleOffersAtLowestPrice     string
+	// The number of seller feedback ratings that have been submitted for the seller with the lowest-priced offer listing in the group.
+	SellerFeedbackCount int
+	// Pricing information for the lowest offer listing in the group.
+	Price Price
+	// Indicates if there is more than one listing with the lowest listing price in the group.
+	MultipleOffersAtLowestPrice string
 }
 
 type Offer struct {
@@ -353,6 +375,7 @@ type Money struct {
 	CurrencyCode string
 }
 
+// Qualifiers identify the offer listing group from which the lowest offer listing was taken.
 type Qualifiers struct {
 	ItemCondition                string
 	ItemSubcondition             string
