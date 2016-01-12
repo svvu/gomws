@@ -173,7 +173,7 @@ func Test_GetLowestOfferListingsForSKUResult_Product_LowestOfferListing1(t *test
 				})
 
 				Convey("ShippingTime Max is 0-2 days", func() {
-					So(q.ShippingTime.Max, ShouldEqual, listingResult["ShippingTime.Max"])
+					So(q.ShippingTime.MaximumDayRange, ShouldEqual, listingResult["ShippingTime.Max"])
 				})
 
 				Convey("SellerPositiveFeedbackRating is 95-97%", func() {
