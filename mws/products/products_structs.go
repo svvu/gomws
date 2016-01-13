@@ -78,6 +78,18 @@ type GetLowestPricedOffersForASINResult struct {
 	Result  LowestPricedOffersProductResult `xml:"GetLowestPricedOffersForASINResult"`
 }
 
+// GetMyPriceForSKUResult the result for the GetMyPriceForSKU operation.
+type GetMyPriceForSKUResult struct {
+	XMLName xml.Name        `xml:"GetMyPriceForSKUResponse"`
+	Results []ProductResult `xml:"GetMyPriceForSKUResult"`
+}
+
+// GetMyPriceForASINResult the result for the GetMyPriceForASIN operation.
+type GetMyPriceForASINResult struct {
+	XMLName xml.Name        `xml:"GetMyPriceForASINResponse"`
+	Results []ProductResult `xml:"GetMyPriceForASINResult"`
+}
+
 // MultiProductsResult the result from the operation, contains meta info for the result.
 // MultiProductsResult contains one of more products.
 type MultiProductsResult struct {
@@ -159,9 +171,15 @@ type Relationships struct {
 
 // CompetitivePricing Contains pricing information for the product
 type CompetitivePricing struct {
-	CompetitivePrices     []CompetitivePrice `xml:">CompetitivePrice"`
-	NumberOfOfferListings []OfferCount       `xml:">OfferListingCount"`
-	TradeInValue          Money
+	CompetitivePrices []CompetitivePrice `xml:">CompetitivePrice"`
+	// The number of active offer listings for the product that was submitted.
+	// The listing count is returned by condition, in OfferListingCount
+	// sub-elements, one for each listing condition value that is returned.
+	// Possible listing condition values are: Any, New, Used, Collectible,
+	// Refurbished, or Club.
+	NumberOfOfferListings []OfferCount `xml:">OfferListingCount"`
+	// The trade-in value of the product in Amazon’s Trade-In program.
+	TradeInValue Money
 }
 
 // SalesRank information for the product by product category.
@@ -187,16 +205,32 @@ type LowestOfferListing struct {
 	MultipleOffersAtLowestPrice string
 }
 
+// SellerOffer contains basic offer infomation and seller id for the offer
 type SellerOffer struct {
-	BuyingPrice        Price
-	RegularPrice       Money
+	// Contains pricing information that includes promotions and contains the shipping cost.
+	BuyingPrice Price
+	// The current price excluding any promotions that apply to the product.
+	// Excludes the shipping cost.
+	RegularPrice Money
+	// The fulfillment channel for the offer listing.
+	// Valid values:
+	// 	Amazon - Fulfilled by Amazon.
+	//  Merchant - Fulfilled by the seller.
 	FulfillmentChannel string
-	ItemCondition      string
-	ItemSubCondition   string
-	SellerId           string
-	SellerSKU          string
+	// The item condition for the offer listing.
+	// Valid values: New, Used, Collectible, Refurbished, or Club.
+	ItemCondition string
+	// The item subcondition for the offer listing.
+	// Valid values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM,
+	// 	Warranty, Refurbished Warranty, Refurbished, Open Box, or Other.
+	ItemSubCondition string
+	// The SellerId submitted with the operation.
+	SellerId string
+	// The SellerSKU for the offer listing.
+	SellerSKU string
 }
 
+// Offer contains price, fulfillment channel and other information for the offer
 type Offer struct {
 	// true if this is your offer.
 	MyOffer bool
@@ -241,8 +275,11 @@ type OfferIdentifier struct {
 
 // Identifiers contains the unique identifies for a product.
 type Identifiers struct {
+	// MarketplaceId and ASIN combination.
 	MarketplaceASIN MarketplaceASIN
-	SKUIdentifier   SKUIdentifier
+	// MarketplaceId, SellerSKU, and SellerId combination.
+	// Only returned if SellerSKU was specified in the request.
+	SKUIdentifier SKUIdentifier
 }
 
 // MarketplaceASIN contains ASIN for the product in the Marketplace.
