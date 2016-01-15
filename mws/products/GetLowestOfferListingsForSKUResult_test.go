@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strconv"
 	"testing"
@@ -18,7 +19,10 @@ func prepareGetLowestOfferListingsForSKUResult() *GetLowestOfferListingsForSKURe
 	resp := &mwsHttps.Response{Result: string(GetLowestOfferListingsForSKUResultResponse)}
 	xmlParser := gmws.NewXMLParser(resp)
 	glolResult := GetLowestOfferListingsForSKUResult{}
-	xmlParser.Parse(&glolResult)
+	err := xmlParser.Parse(&glolResult)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return &glolResult
 }
 
@@ -169,7 +173,11 @@ func Test_GetLowestOfferListingsForSKUResult_Product_LowestOfferListing1(t *test
 				})
 
 				Convey("ShipsDomestically is True", func() {
-					So(q.ShipsDomestically, ShouldEqual, listingResult["ShipsDomestically"])
+					if listingResult["ShipsDomestically"] == "True" {
+						So(q.ShipsDomestically, ShouldBeTrue)
+					} else {
+						So(q.ShipsDomestically, ShouldBeFalse)
+					}
 				})
 
 				Convey("ShippingTime Max is 0-2 days", func() {
@@ -211,7 +219,11 @@ func Test_GetLowestOfferListingsForSKUResult_Product_LowestOfferListing1(t *test
 			})
 
 			Convey("MultipleOffersAtLowestPrice is True", func() {
-				So(listing.MultipleOffersAtLowestPrice, ShouldEqual, listingResult["MultipleOffersAtLowestPrice"])
+				if listingResult["MultipleOffersAtLowestPrice"] == "True" {
+					So(listing.MultipleOffersAtLowestPrice, ShouldBeTrue)
+				} else {
+					So(listing.MultipleOffersAtLowestPrice, ShouldBeFalse)
+				}
 			})
 		})
 	}

@@ -43,3 +43,13 @@ func moneyAsserter(money Money, currencyCode string, amount float64) {
 		convey.So(money.Amount, convey.ShouldEqual, amount)
 	})
 }
+
+func productCategoryAsserter(pc ProductCategory, id, name string) {
+	convey.Convey("ProductCategoryId is "+id, func() {
+		convey.So(pc.Id, convey.ShouldEqual, id)
+	})
+
+	convey.Convey("ProductCategoryName is "+name, func() {
+		convey.So(pc.Name, convey.ShouldEqual, name)
+	})
+}

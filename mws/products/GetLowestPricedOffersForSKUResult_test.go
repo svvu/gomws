@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -17,7 +18,10 @@ func prepareGetLowestPricedOffersForSKUResult() *GetLowestPricedOffersForSKUResu
 	resp := &mwsHttps.Response{Result: string(GetLowestPricedOffersForSKUResultResponse)}
 	xmlParser := gmws.NewXMLParser(resp)
 	glplResult := GetLowestPricedOffersForSKUResult{}
-	xmlParser.Parse(&glplResult)
+	err := xmlParser.Parse(&glplResult)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return &glplResult
 }
 

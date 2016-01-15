@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strconv"
 	"testing"
@@ -18,7 +19,10 @@ func prepareGetMatchingProductForIdResult() *GetMatchingProductForIdResult {
 	resp := &mwsHttps.Response{Result: string(GetMatchingProductForIdResultResponse)}
 	xmlParser := gmws.NewXMLParser(resp)
 	gmpResult := GetMatchingProductForIdResult{}
-	xmlParser.Parse(&gmpResult)
+	err := xmlParser.Parse(&gmpResult)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return &gmpResult
 }
 

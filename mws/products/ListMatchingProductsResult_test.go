@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -17,7 +18,10 @@ func prepareListMatchingProductsResult() MultiProductsResult {
 	resp := &mwsHttps.Response{Result: string(ListMatchingProductsResponse)}
 	xmlParser := gmws.NewXMLParser(resp)
 	lmpResult := ListMatchingProductsResult{}
-	xmlParser.Parse(&lmpResult)
+	err := xmlParser.Parse(&lmpResult)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return lmpResult.Results[0]
 }
 

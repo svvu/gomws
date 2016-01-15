@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -17,7 +18,10 @@ func prepareGetCompetitivePricingForSKUResult() *GetCompetitivePricingForSKUResu
 	resp := &mwsHttps.Response{Result: string(GetCompetitivePricingForSKUResultResponse)}
 	xmlParser := gmws.NewXMLParser(resp)
 	gcpResult := GetCompetitivePricingForSKUResult{}
-	xmlParser.Parse(&gcpResult)
+	err := xmlParser.Parse(&gcpResult)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return &gcpResult
 }
 

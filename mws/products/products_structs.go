@@ -90,6 +90,18 @@ type GetMyPriceForASINResult struct {
 	Results []ProductResult `xml:"GetMyPriceForASINResult"`
 }
 
+// GetProductCategoriesForSKUResult the result for the GetProductCategoriesForSKU operation.
+type GetProductCategoriesForSKUResult struct {
+	XMLName xml.Name                `xml:"GetProductCategoriesForSKUResponse"`
+	Result  ProductCategoriesResult `xml:"GetProductCategoriesForSKUResult"`
+}
+
+// GetProductCategoriesForASINResult the result for the GetProductCategoriesForASIN operation.
+type GetProductCategoriesForASINResult struct {
+	XMLName xml.Name                `xml:"GetProductCategoriesForASINResponse"`
+	Result  ProductCategoriesResult `xml:"GetProductCategoriesForASINResult"`
+}
+
 // MultiProductsResult the result from the operation, contains meta info for the result.
 // MultiProductsResult contains one of more products.
 type MultiProductsResult struct {
@@ -114,6 +126,7 @@ type LowestOfferListingProductResult struct {
 	Status string `xml:"status,attr"`
 }
 
+// LowestPricedOffersProductResult contains Identifier, Offer Summary, Offers list for the product.
 type LowestPricedOffersProductResult struct {
 	Identifier OfferIdentifier
 	Summary    OffersSummary
@@ -121,15 +134,27 @@ type LowestPricedOffersProductResult struct {
 	Status     string  `xml:"status,attr"`
 }
 
+// ProductCategoriesResult a list ProductCategory.
+type ProductCategoriesResult struct {
+	ProductCategories []ProductCategory `xml:"Self"`
+}
+
 // Product contains basic, relationship to other products, pricing, and offers info.
 type Product struct {
-	Identifiers         Identifiers
-	AttributeSets       []ItemAttributes `xml:">ItemAttributes"`
-	Relationships       Relationships
-	CompetitivePricing  CompetitivePricing
-	SalesRankings       []SalesRank          `xml:">SalesRank"`
+	// The unique identifies for a product.
+	Identifiers Identifiers
+	// A list of roduct's attributes infomation.
+	AttributeSets []ItemAttributes `xml:">ItemAttributes"`
+	// Product variation information.
+	Relationships Relationships
+	// CompetitivePricing Contains pricing information for the product.
+	CompetitivePricing CompetitivePricing
+	// A list of SalesRank information for the product by product category.
+	SalesRankings []SalesRank `xml:">SalesRank"`
+	// Pricing information for the lowest offer listing for each offer listing group.
 	LowestOfferListings []LowestOfferListing `xml:">LowestOfferListing"`
-	Offers              []SellerOffer        `xml:">Offer"`
+	// A list of basic offer infomation and seller id for the offer.
+	Offers []SellerOffer `xml:">Offer"`
 }
 
 // OffersSummary contains price information about the product.
@@ -169,7 +194,7 @@ type Relationships struct {
 	Children []VariationChild  `xml:"VariationChild"`
 }
 
-// CompetitivePricing Contains pricing information for the product
+// CompetitivePricing Contains pricing information for the product.
 type CompetitivePricing struct {
 	CompetitivePrices []CompetitivePrice `xml:">CompetitivePrice"`
 	// The number of active offer listings for the product that was submitted.
@@ -188,6 +213,18 @@ type SalesRank struct {
 	Rank              int
 }
 
+// ProductCategory Contains the ProductCategoryId for the product.
+// Also contains a ProductCategoryId for each of the parent categories of the
+// 	product, up to the root for the Marketplace.
+type ProductCategory struct {
+	// Identifier for a product category (or browse node).
+	Id string `xml:"ProductCategoryId"`
+	// Name of a product category (or browse node).
+	Name string `xml:"ProductCategoryName"`
+	// Parent product category of current category
+	Parent *ProductCategory `xml:"Parent"`
+}
+
 // LowestOfferListing Contains pricing information for the lowest offer listing for each offer listing group.
 type LowestOfferListing struct {
 	// Qualifiers Contains the six qualifiers:
@@ -202,10 +239,10 @@ type LowestOfferListing struct {
 	// Pricing information for the lowest offer listing in the group.
 	Price Price
 	// Indicates if there is more than one listing with the lowest listing price in the group.
-	MultipleOffersAtLowestPrice string
+	MultipleOffersAtLowestPrice bool
 }
 
-// SellerOffer contains basic offer infomation and seller id for the offer
+// SellerOffer contains basic offer infomation and seller id for the offer.
 type SellerOffer struct {
 	// Contains pricing information that includes promotions and contains the shipping cost.
 	BuyingPrice Price
@@ -230,7 +267,7 @@ type SellerOffer struct {
 	SellerSKU string
 }
 
-// Offer contains price, fulfillment channel and other information for the offer
+// Offer contains price, fulfillment channel and other information for the offer.
 type Offer struct {
 	// true if this is your offer.
 	MyOffer bool
@@ -284,15 +321,19 @@ type Identifiers struct {
 
 // MarketplaceASIN contains ASIN for the product in the Marketplace.
 type MarketplaceASIN struct {
+	// An encrypted, Amazon-defined marketplace identifier.
 	MarketplaceId string
 	ASIN          string
 }
 
 // SKUIdentifier contains the SKU info for the products in the Marketplace.
 type SKUIdentifier struct {
+	// An encrypted, Amazon-defined marketplace identifier.
 	MarketplaceId string
-	SellerId      string
-	SellerSKU     string
+	// The unique Seller identifier.
+	SellerId string
+	// The Seller SKU of the item.
+	SellerSKU string
 }
 
 // VariationParent parents for the product.
@@ -417,18 +458,32 @@ type Language struct {
 
 // Image atrributes.
 type Image struct {
-	URL    string
+	URL string
+	// Height in pixel.
 	Height DecimalWithUnits
-	Width  DecimalWithUnits
+	// Weight in pixel.
+	Width DecimalWithUnits
 }
 
 // Qualifiers identify the offer listing group from which the lowest offer listing was taken.
 type Qualifiers struct {
-	ItemCondition                string
-	ItemSubcondition             string
-	FulfillmentChannel           string
-	ShipsDomestically            string
-	ShippingTime                 ShippingTime
+	// The item condition for the offer listing.
+	// Valid values: New, Used, Collectible, Refurbished, or Club.
+	ItemCondition string
+	// The item subcondition for the offer listing.
+	// Valid values: New, Mint, Very Good, Good, Acceptable, Poor, Club, OEM,
+	// 	Warranty, Refurbished Warranty, Refurbished, Open Box, or Other.
+	ItemSubcondition string
+	// The fulfillment channel for the offer listing.
+	// Valid values:
+	// 	Amazon - Fulfilled by Amazon.
+	//  Merchant - Fulfilled by the seller.
+	FulfillmentChannel string
+	// When the products will ship domestically.
+	ShipsDomestically bool
+	// The time range in which an item will likely be shipped once an order has been placed.
+	ShippingTime ShippingTime
+	// The percentage of positive feedback for the seller in the past 365 days.
 	SellerPositiveFeedbackRating string
 }
 
@@ -462,6 +517,7 @@ type ShippingTime struct {
 	AvailabilityType string `xml:"availabilityType,attr"`
 }
 
+// Address contains state and country infomation.
 type Address struct {
 	State   string
 	Country string
