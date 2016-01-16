@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// EndPoints a list of API endpoints by marketpalceID
 var EndPoints = map[string]string{
 	"A2EUQ1WTGCTBG2": "mws.amazonservices.ca",
 	"ATVPDKIKX0DER":  "mws.amazonservices.com",
@@ -17,6 +18,7 @@ var EndPoints = map[string]string{
 	"AAHKV2X7AFYLW":  "mws.amazonservices.com.cn",
 }
 
+// MarketPlaceIds a list of marketplace by region
 var MarketPlaceIds = map[string]string{
 	"CA": "A2EUQ1WTGCTBG2",
 	"US": "ATVPDKIKX0DER",
@@ -30,21 +32,25 @@ var MarketPlaceIds = map[string]string{
 	"CN": "AAHKV2X7AFYLW",
 }
 
-type MarketplaceError struct {
+// Error for marketplace.
+// There are two type of errors: marketplace id error and region error.
+type Error struct {
 	errorType string
 	value     string
 }
 
-func (e MarketplaceError) Error() string {
+func (e Error) Error() string {
 	return fmt.Sprintf("Invalid %v: %v", e.errorType, e.value)
 }
 
+// MarketPlace contains region, id, and enpoint for the marketpalce.
 type MarketPlace struct {
 	Region   string
 	Id       string
 	EndPoint string
 }
 
+// New create a new marketplace base on the region.
 func New(region string) (*MarketPlace, error) {
 	mp := MarketPlace{Region: region}
 
@@ -62,7 +68,7 @@ func New(region string) (*MarketPlace, error) {
 	return &mp, nil
 }
 
-// Endpoint get the MWS end point for the region.
+// MarketPlaceEndPoint get the MWS end point for the region.
 func (mp *MarketPlace) MarketPlaceEndPoint() (string, error) {
 	if mp.EndPoint != "" {
 		return mp.EndPoint, nil
@@ -70,10 +76,10 @@ func (mp *MarketPlace) MarketPlaceEndPoint() (string, error) {
 	if val, ok := EndPoints[mp.Id]; ok {
 		return val, nil
 	}
-	return "", MarketplaceError{"marketplace id", mp.Id}
+	return "", Error{"marketplace id", mp.Id}
 }
 
-// MarketPlaceID get the marketpalce id for the region.
+// MarketPlaceId get the marketpalce id for the region.
 func (mp *MarketPlace) MarketPlaceId() (string, error) {
 	if mp.Id != "" {
 		return mp.Id, nil
@@ -81,7 +87,7 @@ func (mp *MarketPlace) MarketPlaceId() (string, error) {
 	if val, ok := MarketPlaceIds[mp.Region]; ok {
 		return val, nil
 	}
-	return "", MarketplaceError{"region", mp.Region}
+	return "", Error{"region", mp.Region}
 }
 
 // Encoding get the ecoding for file upload and parsing

@@ -7,22 +7,27 @@ import (
 	"github.com/svvu/gomws/mwsHttps"
 )
 
-// MwsBase contains the basic information for the api client
+// MwsBase contains the basic information for the api client.
 type MwsBase struct {
-	SellerId      string // Seller's Amazon id
-	AuthToken     string // Auth token for developer to use the api
-	Region        string // Region of the marketplace in two character
+	// Seller's Amazon id.
+	SellerId string
+	// Auth token for developer to use the API.
+	AuthToken string
+	// Region of the marketplace in two character.
+	Region        string
 	MarketPlaceId string
 	Host          string
-	Version       string // The api's version
-	Name          string // The api's name
-	accessKey     string
-	secretKey     string
+	// The API version.
+	Version string
+	// The API name.
+	Name      string
+	accessKey string
+	secretKey string
 }
 
-// NewMwsBase create a new mws base
-// MwsConfig is the configuration struct
-// 	SellerId, AuthToken, Region string
+// NewMwsBase create a new mws base.
+// MwsConfig is the configuration struct.
+// 	Contains value for: SellerId, AuthToken, Region.
 func NewMwsBase(config MwsConfig, version, name string) (*MwsBase, error) {
 	if config.SellerId == "" {
 		return nil, fmt.Errorf("No seller id provided")
@@ -68,12 +73,12 @@ func (base MwsBase) Path() string {
 	return path
 }
 
-// SignatureMethod return the HmacSHA256 signature method string
+// SignatureMethod return the HmacSHA256 signature method string.
 func (base MwsBase) SignatureMethod() string {
 	return "HmacSHA256"
 }
 
-// SignatureVersion return version 2
+// SignatureVersion return version 2.
 func (base MwsBase) SignatureVersion() string {
 	return "2"
 }
@@ -103,7 +108,7 @@ func (base MwsBase) getCredential() Credential {
 }
 
 // HTTPClient return an http client with pass in querys, and ready for send of
-//  request to the server
+//  request to the server.
 func (base MwsBase) HTTPClient(values mwsHttps.Values) *mwsHttps.Client {
 	httpClient := mwsHttps.NewClient(base.Host, base.Path())
 	httpClient.SetParameters(values)
@@ -112,7 +117,7 @@ func (base MwsBase) HTTPClient(values mwsHttps.Values) *mwsHttps.Client {
 	return httpClient
 }
 
-// SendRequest accept a structured params and send the request to the api
+// SendRequest accept a structured params and send the request to the API.
 func (base MwsBase) SendRequest(structuredParams Parameters) *mwsHttps.Response {
 	normalizedParams, err := structuredParams.Normalize()
 

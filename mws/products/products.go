@@ -1,6 +1,6 @@
-// Reference http://docs.developer.amazonservices.com/en_US/products/Products_Overview.html
-
 package products
+
+// Reference http://docs.developer.amazonservices.com/en_US/products/Products_Overview.html
 
 import (
 	"github.com/svvu/gomws/gmws"

@@ -16,12 +16,12 @@ type Values struct {
 	url.Values
 }
 
-// NewValues initilize the Values struct with default value
+// NewValues initilize the Values struct with default value.
 func NewValues() Values {
 	return Values{url.Values{}}
 }
 
-// Encode encode the parameters and replace + by %20
+// Encode encode the parameters and replace + by %20.
 func (params Values) Encode() string {
 	return strings.Replace(params.Values.Encode(), "+", "%20", -1)
 }
@@ -42,6 +42,7 @@ type Client struct {
 	*http.Client
 }
 
+// NewClient create a new http client.
 func NewClient(host, path string) *Client {
 	return &Client{
 		Host:   host,
@@ -54,9 +55,8 @@ func (client *Client) checkSignStatus() error {
 	if !client.signed {
 		if client.signatureKey == "" {
 			return fmt.Errorf("Query not signed, unknow secret key")
-		} else {
-			client.SignQuery(client.signatureKey)
 		}
+		client.SignQuery(client.signatureKey)
 	}
 	return nil
 }
@@ -91,12 +91,12 @@ func (client *Client) SignQuery(secretKey string) {
 	client.signed = true
 }
 
-// SetSecretKey update the key for siging the query
+// SetSecretKey update the key for siging the query.
 func (client *Client) SetSecretKey(secretKey string) {
 	client.signatureKey = secretKey
 }
 
-// SetParameters assign the passin parameters to the client
+// SetParameters assign the passin parameters to the client.
 func (client *Client) SetParameters(v Values) {
 	client.parameters = v
 }
@@ -110,6 +110,7 @@ func (client *Client) AugmentParameters(params map[string]string) {
 	client.signed = false
 }
 
+// EndPoint generate the endpoint for the request by combinding the host and path.
 func (client *Client) EndPoint() string {
 	return "https://" + client.Host + client.Path
 }
@@ -181,10 +182,10 @@ func (client *Client) parseResponse(response *Response, resp *http.Response) *Re
 }
 
 const (
-	Iso8061Format = time.RFC3339 // "2006-01-02T15:04:05Z07:00"
+	iso8061Format = time.RFC3339 // "2006-01-02T15:04:05Z07:00"
 )
 
 // Current timestamp in iso8061 format.
 func now() string {
-	return time.Now().UTC().Format(Iso8061Format)
+	return time.Now().UTC().Format(iso8061Format)
 }
