@@ -1,28 +1,13 @@
 package products
 
 import (
-	"fmt"
-	"io/ioutil"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
-)
-
-var GetCompetitivePricingForSKUResultResponse, _ = ioutil.ReadFile(
-	"./examples/GetCompetitivePricingForSKU.xml",
 )
 
 func prepareGetCompetitivePricingForSKUResult() *GetCompetitivePricingForSKUResult {
-	resp := &mwsHttps.Response{Result: string(GetCompetitivePricingForSKUResultResponse)}
-	xmlParser := gmws.NewXMLParser(resp)
-	gcpResult := GetCompetitivePricingForSKUResult{}
-	err := xmlParser.Parse(&gcpResult)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return &gcpResult
+	return loadExample("GetCompetitivePricingForSKU").(*GetCompetitivePricingForSKUResult)
 }
 
 func Test_GetCompetitivePricingForSKUResult(t *testing.T) {

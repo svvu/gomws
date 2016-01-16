@@ -1,29 +1,14 @@
 package products
 
 import (
-	"fmt"
-	"io/ioutil"
 	"strconv"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
-)
-
-var GetMatchingProductForIdResultResponse, _ = ioutil.ReadFile(
-	"./examples/GetMatchingProductForId.xml",
 )
 
 func prepareGetMatchingProductForIdResult() *GetMatchingProductForIdResult {
-	resp := &mwsHttps.Response{Result: string(GetMatchingProductForIdResultResponse)}
-	xmlParser := gmws.NewXMLParser(resp)
-	gmpResult := GetMatchingProductForIdResult{}
-	err := xmlParser.Parse(&gmpResult)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return &gmpResult
+	return loadExample("GetMatchingProductForId").(*GetMatchingProductForIdResult)
 }
 
 func Test_GetMatchingProductForIDResult(t *testing.T) {

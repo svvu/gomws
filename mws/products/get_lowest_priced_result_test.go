@@ -1,28 +1,13 @@
 package products
 
 import (
-	"fmt"
-	"io/ioutil"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
-)
-
-var GetLowestPricedOffersForSKUResultResponse, _ = ioutil.ReadFile(
-	"./examples/GetLowestPricedOffersForSKU.xml",
 )
 
 func prepareGetLowestPricedOffersForSKUResult() *GetLowestPricedOffersForSKUResult {
-	resp := &mwsHttps.Response{Result: string(GetLowestPricedOffersForSKUResultResponse)}
-	xmlParser := gmws.NewXMLParser(resp)
-	glplResult := GetLowestPricedOffersForSKUResult{}
-	err := xmlParser.Parse(&glplResult)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return &glplResult
+	return loadExample("GetLowestPricedOffersForSKU").(*GetLowestPricedOffersForSKUResult)
 }
 
 func Test_GetLowestPricedOffersForSKUResult(t *testing.T) {

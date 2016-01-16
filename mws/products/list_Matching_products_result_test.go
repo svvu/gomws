@@ -1,33 +1,18 @@
 package products
 
 import (
-	"fmt"
-	"io/ioutil"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
 )
 
-var ListMatchingProductsResponse, _ = ioutil.ReadFile(
-	"./examples/ListMatchingProducts.xml",
-)
-
-func prepareListMatchingProductsResult() MultiProductsResult {
-	resp := &mwsHttps.Response{Result: string(ListMatchingProductsResponse)}
-	xmlParser := gmws.NewXMLParser(resp)
-	lmpResult := ListMatchingProductsResult{}
-	err := xmlParser.Parse(&lmpResult)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return lmpResult.Results[0]
+func prepareListMatchingProductsResult() *ListMatchingProductsResult {
+	return loadExample("ListMatchingProducts").(*ListMatchingProductsResult)
 }
 
 func Test_ListMatchingProductsResult(t *testing.T) {
 	Convey("Request response", t, func() {
-		lmpResult := prepareListMatchingProductsResult()
+		lmpResult := prepareListMatchingProductsResult().Results[0]
 
 		Convey("Has 1 Product", func() {
 			So(lmpResult.Products, ShouldHaveLength, 1)
@@ -36,7 +21,7 @@ func Test_ListMatchingProductsResult(t *testing.T) {
 }
 
 func Test_ListMatchingProductsResult_Product1(t *testing.T) {
-	lmpResult := prepareListMatchingProductsResult()
+	lmpResult := prepareListMatchingProductsResult().Results[0]
 
 	Convey("Product 1", t, func() {
 		p1 := lmpResult.Products[0]
@@ -56,7 +41,7 @@ func Test_ListMatchingProductsResult_Product1(t *testing.T) {
 }
 
 func Test_ListMatchingProductsResult_Product1_Identifiers(t *testing.T) {
-	lmpResult := prepareListMatchingProductsResult()
+	lmpResult := prepareListMatchingProductsResult().Results[0]
 
 	Convey("Product 1 Identifiers", t, func() {
 		iden := lmpResult.Products[0].Identifiers
@@ -80,7 +65,7 @@ func Test_ListMatchingProductsResult_Product1_Identifiers(t *testing.T) {
 }
 
 func Test_ListMatchingProductsResult_Product1_ItemAttributes1(t *testing.T) {
-	lmpResult := prepareListMatchingProductsResult()
+	lmpResult := prepareListMatchingProductsResult().Results[0]
 
 	Convey("Product 1 ItemAttributes 1", t, func() {
 		attr := lmpResult.Products[0].AttributeSets[0]
@@ -307,7 +292,7 @@ func Test_ListMatchingProductsResult_Product1_ItemAttributes1(t *testing.T) {
 }
 
 func Test_ListMatchingProductsResult_Product1_SalesRankings(t *testing.T) {
-	lmpResult := prepareListMatchingProductsResult()
+	lmpResult := prepareListMatchingProductsResult().Results[0]
 
 	Convey("Product 1 SalesRankings", t, func() {
 		sr := lmpResult.Products[0].SalesRankings

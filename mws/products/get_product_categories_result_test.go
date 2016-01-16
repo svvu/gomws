@@ -1,28 +1,13 @@
 package products
 
 import (
-	"fmt"
-	"io/ioutil"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
-)
-
-var GetProductCategoriesForSKUResultResponse, _ = ioutil.ReadFile(
-	"./examples/GetProductCategoriesForSKU.xml",
 )
 
 func prepareGetProductCategoriesForSKUResult() *GetProductCategoriesForSKUResult {
-	resp := &mwsHttps.Response{Result: string(GetProductCategoriesForSKUResultResponse)}
-	xmlParser := gmws.NewXMLParser(resp)
-	gcResult := GetProductCategoriesForSKUResult{}
-	err := xmlParser.Parse(&gcResult)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return &gcResult
+	return loadExample("GetProductCategoriesForSKU").(*GetProductCategoriesForSKUResult)
 }
 
 func Test_GetProductCategoriesForSKUResult(t *testing.T) {

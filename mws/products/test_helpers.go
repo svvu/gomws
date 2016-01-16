@@ -1,10 +1,44 @@
 package products
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/smartystreets/goconvey/convey"
+	"github.com/svvu/gomws/gmws"
 )
+
+func loadExample(name string) interface{} {
+	var (
+		result interface{}
+		err    error
+	)
+
+	switch name {
+	case "ListMatchingProducts":
+		result, err = gmws.LoadExample("./examples/ListMatchingProducts.xml", &ListMatchingProductsResult{})
+	case "GetMatchingProduct":
+		result, err = gmws.LoadExample("./examples/GetMatchingProduct.xml", &GetMatchingProductResult{})
+	case "GetMatchingProductForId":
+		result, err = gmws.LoadExample("./examples/GetMatchingProductForId.xml", &GetMatchingProductForIdResult{})
+	case "GetCompetitivePricingForSKU":
+		result, err = gmws.LoadExample("./examples/GetCompetitivePricingForSKU.xml", &GetCompetitivePricingForSKUResult{})
+	case "GetLowestOfferListingsForSKU":
+		result, err = gmws.LoadExample("./examples/GetLowestOfferListingsForSKU.xml", &GetLowestOfferListingsForSKUResult{})
+	case "GetLowestPricedOffersForSKU":
+		result, err = gmws.LoadExample("./examples/GetLowestPricedOffersForSKU.xml", &GetLowestPricedOffersForSKUResult{})
+	case "GetMyPriceForSKU":
+		result, err = gmws.LoadExample("./examples/GetMyPriceForSKU.xml", &GetMyPriceForSKUResult{})
+	case "GetProductCategoriesForSKU":
+		result, err = gmws.LoadExample("./examples/GetProductCategoriesForSKU.xml", &GetProductCategoriesForSKUResult{})
+	}
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return result
+}
 
 func decimalWithUnitsAsserter(dwn DecimalWithUnits, unit string, value float64) {
 	convey.Convey("Units is "+unit, func() {
