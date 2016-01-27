@@ -10,6 +10,14 @@ func prepareGetLowestPricedOffersForSKUResult() *GetLowestPricedOffersForSKUResu
 	return loadExample("GetLowestPricedOffersForSKU").(*GetLowestPricedOffersForSKUResult)
 }
 
+func getLowestPricedNoOffers() *GetLowestPricedOffersForSKUResult {
+	return loadExample("GetLowestPricedOffersForSKU_NoOffers").(*GetLowestPricedOffersForSKUResult)
+}
+
+func getLowestPricedServerError() *GetLowestPricedOffersForSKUResult {
+	return loadExample("GetLowestPricedOffersForSKU_ServerError").(*GetLowestPricedOffersForSKUResult)
+}
+
 func Test_GetLowestPricedOffersForSKUResult(t *testing.T) {
 	Convey("Request response", t, func() {
 		glplResult := prepareGetLowestPricedOffersForSKUResult()
@@ -221,6 +229,24 @@ func Test_GetLowestPricedOffersForSKUResult_Offers(t *testing.T) {
 
 		Convey("IsFeaturedMerchant is true", func() {
 			So(offer.IsFeaturedMerchant, ShouldBeTrue)
+		})
+	})
+}
+
+func Test_LowestPricedNoOffers(t *testing.T) {
+	Convey("Request response", t, func() {
+		noOfferResult := getLowestPricedNoOffers().Result
+
+		Convey("Status is NoBuyableOffers", func() {
+			So(noOfferResult.Status, ShouldEqual, "NoBuyableOffers")
+		})
+
+		Convey("Summary has total ofter count 0", func() {
+			So(noOfferResult.Summary.TotalOfferCount, ShouldEqual, 0)
+		})
+
+		Convey("Offer list is empty", func() {
+			So(noOfferResult.Offers, ShouldHaveLength, 0)
 		})
 	})
 }

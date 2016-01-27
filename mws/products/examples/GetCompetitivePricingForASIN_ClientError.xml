@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<GetCompetitivePricingForASINResponse xmlns="http://mws.amazonservices.com/schema/Products/2011-10-01">
+<GetCompetitivePricingForASINResult ASIN="ABC" status="ClientError">
+  <Error>
+    <Type>Sender</Type>
+    <Code>InvalidParameterValue</Code>
+    <Message>ASIN ABC is not valid for marketplace ATVPDKIKX0DER</Message>
+  </Error>
+</GetCompetitivePricingForASINResult>
+<ResponseMetadata>
+  <RequestId>bb7c06d0-ff45-41bb-8dfe-14589984</RequestId>
+</ResponseMetadata>
+</GetCompetitivePricingForASINResponse>

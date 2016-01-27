@@ -10,6 +10,10 @@ func prepareGetCompetitivePricingForSKUResult() *GetCompetitivePricingForSKUResu
 	return loadExample("GetCompetitivePricingForSKU").(*GetCompetitivePricingForSKUResult)
 }
 
+func getCompetitivePricingServerError() *GetCompetitivePricingForASINResult {
+	return loadExample("GetCompetitivePricingForASIN_ClientError").(*GetCompetitivePricingForASINResult)
+}
+
 func Test_GetCompetitivePricingForSKUResult(t *testing.T) {
 	Convey("Request response", t, func() {
 		gcpResult := prepareGetCompetitivePricingForSKUResult()
@@ -207,5 +211,43 @@ func Test_GetCompetitivePricingForSKUResult_Product_CompetitivePricing(t *testin
 
 	Convey("TradeInValue", t, func() {
 		moneyAsserter(comPricing.TradeInValue, "USD", 17.05)
+	})
+}
+
+func Test_CompetitivePricingServerError(t *testing.T) {
+	Convey("Request response", t, func() {
+		clientResults := getCompetitivePricingServerError().Results
+
+		Convey("Has 1 result", func() {
+			So(clientResults, ShouldHaveLength, 1)
+		})
+
+		Convey("Result", func() {
+			clientError := clientResults[0]
+
+			Convey("Product has no data", func() {
+				So(clientError.Product, ShouldBeZeroValue)
+			})
+
+			Convey("Status is ClientError", func() {
+				So(clientError.Status, ShouldEqual, "ClientError")
+			})
+
+			Convey("Error", func() {
+				err := clientError.Error
+
+				Convey("Type is Sender", func() {
+					So(err.Type, ShouldEqual, "Sender")
+				})
+
+				Convey("Code is InvalidParameterValue", func() {
+					So(err.Code, ShouldEqual, "InvalidParameterValue")
+				})
+
+				Convey("Message is ASIN ABC is not valid for marketplace ATVPDKIKX0DER", func() {
+					So(err.Message, ShouldEqual, "ASIN ABC is not valid for marketplace ATVPDKIKX0DER")
+				})
+			})
+		})
 	})
 }

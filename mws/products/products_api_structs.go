@@ -1,6 +1,10 @@
 package products
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+
+	"github.com/svvu/gomws/gmws"
+)
 
 // References:
 // http://g-ecx.images-amazon.com/images/G/01/mwsportal/doc/en_US/products/ProductsAPI_Response.xsd
@@ -31,6 +35,7 @@ func (mpr *GetMatchingProductResult) ParseCallback() {
 		result := &results[i]
 		result.Products = []Product{r.Product}
 		result.Status = r.Status
+		result.Error = r.Error
 	}
 	mpr.Results = results
 	mpr.ProductResults = nil
@@ -105,17 +110,19 @@ type GetProductCategoriesForASINResult struct {
 // MultiProductsResult the result from the operation, contains meta info for the result.
 // MultiProductsResult contains one of more products.
 type MultiProductsResult struct {
-	Products []Product `xml:">Product"`
-	ID       string    `xml:"Id,attr"`
-	IDType   string    `xml:"IdType,attr"`
-	Status   string    `xml:"status,attr"`
+	Products []Product   `xml:">Product"`
+	ID       string      `xml:"Id,attr"`
+	IDType   string      `xml:"IdType,attr"`
+	Status   string      `xml:"status,attr"`
+	Error    *gmws.Error `xml:"Error"`
 }
 
 // ProductResult the result from the operation, contains meta info for the result.
 // ProductResult contains only one product.
 type ProductResult struct {
-	Product Product `xml:"Product"`
-	Status  string  `xml:"status,attr"`
+	Product Product     `xml:"Product"`
+	Status  string      `xml:"status,attr"`
+	Error   *gmws.Error `xml:"Error"`
 }
 
 // LowestOfferListingProductResult the result from the operation.
@@ -123,18 +130,21 @@ type ProductResult struct {
 type LowestOfferListingProductResult struct {
 	AllOfferListingsConsidered bool `xml:"AllOfferListingsConsidered"`
 	ProductResult
-	Status string `xml:"status,attr"`
+	Status string      `xml:"status,attr"`
+	Error  *gmws.Error `xml:"Error"`
 }
 
 // LowestPricedOffersProductResult contains Identifier, Offer Summary, Offers list for the product.
 type LowestPricedOffersProductResult struct {
 	Identifier OfferIdentifier
 	Summary    OffersSummary
-	Offers     []Offer `xml:">Offer"`
-	Status     string  `xml:"status,attr"`
+	Offers     []Offer     `xml:">Offer"`
+	Status     string      `xml:"status,attr"`
+	Error      *gmws.Error `xml:"Error"`
 }
 
 // ProductCategoriesResult a list ProductCategory.
 type ProductCategoriesResult struct {
 	ProductCategories []ProductCategory `xml:"Self"`
+	Error             *gmws.Error       `xml:"Error"`
 }

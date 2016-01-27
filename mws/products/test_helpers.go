@@ -16,21 +16,23 @@ func loadExample(name string) interface{} {
 
 	switch name {
 	case "ListMatchingProducts":
-		result, err = gmws.LoadExample("./examples/ListMatchingProducts.xml", &ListMatchingProductsResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &ListMatchingProductsResult{})
 	case "GetMatchingProduct":
-		result, err = gmws.LoadExample("./examples/GetMatchingProduct.xml", &GetMatchingProductResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetMatchingProductResult{})
 	case "GetMatchingProductForId":
-		result, err = gmws.LoadExample("./examples/GetMatchingProductForId.xml", &GetMatchingProductForIdResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetMatchingProductForIdResult{})
 	case "GetCompetitivePricingForSKU":
-		result, err = gmws.LoadExample("./examples/GetCompetitivePricingForSKU.xml", &GetCompetitivePricingForSKUResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetCompetitivePricingForSKUResult{})
+	case "GetCompetitivePricingForASIN_ClientError":
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetCompetitivePricingForASINResult{})
 	case "GetLowestOfferListingsForSKU":
-		result, err = gmws.LoadExample("./examples/GetLowestOfferListingsForSKU.xml", &GetLowestOfferListingsForSKUResult{})
-	case "GetLowestPricedOffersForSKU":
-		result, err = gmws.LoadExample("./examples/GetLowestPricedOffersForSKU.xml", &GetLowestPricedOffersForSKUResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetLowestOfferListingsForSKUResult{})
+	case "GetLowestPricedOffersForSKU", "GetLowestPricedOffersForSKU_NoOffers", "GetLowestPricedOffersForSKU_ServerError":
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetLowestPricedOffersForSKUResult{})
 	case "GetMyPriceForSKU":
-		result, err = gmws.LoadExample("./examples/GetMyPriceForSKU.xml", &GetMyPriceForSKUResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetMyPriceForSKUResult{})
 	case "GetProductCategoriesForSKU":
-		result, err = gmws.LoadExample("./examples/GetProductCategoriesForSKU.xml", &GetProductCategoriesForSKUResult{})
+		result, err = gmws.LoadExample("./examples/"+name+".xml", &GetProductCategoriesForSKUResult{})
 	}
 
 	if err != nil {

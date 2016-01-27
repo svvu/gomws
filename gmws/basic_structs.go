@@ -22,6 +22,22 @@ type Message struct {
 	Text   string
 }
 
+// ErrorResult error message from the API, most of time its bad request error.
+type ErrorResult struct {
+	XMLName xml.Name `xml:"ErrorResponse"`
+	Error   *Error   `xml:"Error"`
+}
+
+// Error represents the error message from the API.
+type Error struct {
+	// Error type. Values: Sender, Server.
+	Type string
+	// Amazon error code.
+	Code string
+	// Text explain the error.
+	Message string
+}
+
 // LoadExample load example xml and parse it by passed in struct v
 func LoadExample(filePath string, v interface{}) (interface{}, error) {
 	response, ferr := ioutil.ReadFile(filePath)

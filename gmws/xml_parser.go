@@ -60,6 +60,19 @@ func (xmlp *XMLParser) Parse(v interface{}) error {
 	return err
 }
 
+// HasError check whether or nor API send back error, not http error
+func (xmlp *XMLParser) HasError() bool {
+	err := xmlp.GetError()
+	return err.Error != nil
+}
+
+// GetError return the ErrorResult contains error type, code, and detail message
+func (xmlp *XMLParser) GetError() *ErrorResult {
+	err := ErrorResult{}
+	xmlp.Parse(&err)
+	return &err
+}
+
 // XMLResultHandler is interface to allow parsed XML result to have callback
 type XMLResultHandler interface {
 	ParseCallback()
