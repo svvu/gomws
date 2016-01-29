@@ -144,6 +144,8 @@ func (client *Client) Send() *Response {
 		return response
 	}
 
+	response.RequestHeader = client.parameters.Encode()
+
 	if client.Client == nil {
 		client.Client = &http.Client{}
 	}
@@ -167,6 +169,8 @@ func (client *Client) Send() *Response {
 func (client *Client) parseResponse(response *Response, resp *http.Response) *Response {
 	response.Status = resp.Status
 	response.StatusCode = resp.StatusCode
+	response.Header = resp.Header
+
 	if !CheckStatusCode(resp.StatusCode) {
 		response.Error = fmt.Errorf("Request not success. Reason: %v", resp.Status)
 	}
@@ -176,8 +180,7 @@ func (client *Client) parseResponse(response *Response, resp *http.Response) *Re
 		response.Error = err
 		return response
 	}
-
-	response.Result = string(body)
+	response.Body = body
 	return response
 }
 

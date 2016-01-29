@@ -162,7 +162,7 @@ func TestSend(t *testing.T) {
 		resp := httpClient.Send()
 
 		Convey("Result is empty", func() {
-			So(resp.Result, ShouldBeBlank)
+			So(resp.Result(), ShouldBeBlank)
 		})
 
 		Convey("Error is not nil", func() {
@@ -227,7 +227,7 @@ func TestSend(t *testing.T) {
 
 		Convey("Response with result msg", func() {
 			// Response msg end with new line character
-			So(strings.TrimSpace(response.Result), ShouldEqual, "Hello, client")
+			So(strings.TrimSpace(response.Result()), ShouldEqual, "Hello, client")
 		})
 	})
 }
@@ -262,7 +262,7 @@ func TestParseResponse(t *testing.T) {
 		})
 
 		Convey("Response with result message", func() {
-			So(response.Result, ShouldEqual, "Request OK")
+			So(response.Result(), ShouldEqual, "Request OK")
 		})
 
 		Convey("Response with nil error", func() {
