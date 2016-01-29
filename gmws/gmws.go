@@ -2,7 +2,6 @@ package gmws
 
 import (
 	"os"
-	"strings"
 
 	"github.com/svvu/gomws/mwsHttps"
 )
@@ -17,6 +16,7 @@ type MwsConfig struct {
 	SecretKey string
 }
 
+// MwsClient the interface for API clients.
 type MwsClient interface {
 	Version() string
 	Name() string
@@ -29,6 +29,7 @@ const (
 	envSecretKey = "AWS_SECRET_KEY"
 )
 
+// Credential the credential to access the API.
 type Credential struct {
 	AccessKey string
 	SecretKey string
@@ -41,42 +42,4 @@ func GetCredential() Credential {
 	credential.SecretKey = os.Getenv(envSecretKey)
 
 	return credential
-}
-
-// OptionalParams get the values from the pass in parameters.
-// Only values for keys that are accepted will be returned.
-//
-// Note: The keys returned will be in title case.
-//
-// If the key appear in mulit parameters, later one will override the previous.
-// Ex:
-// 		ps := []mwsHttps.Parameters{
-// 			{"key1": "value1", "key2": "value2"},
-// 			{"key1": "newValue1", "key3": "value3"},
-// 		}
-// 		acceptKeys := []string{"key1", "key2"}
-// 		resultParams := OptionalParams(acceptKeys, ps)
-// result:
-// 		resultParams -> {"Key1": "newValue1", "Key2": "value2"}
-func OptionalParams(acceptKeys []string, ops []Parameters) Parameters {
-	param := Parameters{}
-	op := Parameters{}
-
-	if len(ops) == 0 {
-		return param
-	}
-
-	for _, p := range ops {
-		op.Merge(p)
-	}
-
-	for _, key := range acceptKeys {
-		value, ok := op[key]
-		if ok {
-			param[strings.Title(key)] = value
-			delete(op, key)
-		}
-	}
-
-	return param
 }

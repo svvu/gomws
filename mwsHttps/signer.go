@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 )
 
-// SignV2 sign the message with the key by using hmac256
+// SignV2 sign the message with the key by using hmac256.
 func SignV2(stringToSign string, secret string) string {
 	hmac256 := computeHmac256(stringToSign, secret)
 	return base64.StdEncoding.EncodeToString(hmac256)

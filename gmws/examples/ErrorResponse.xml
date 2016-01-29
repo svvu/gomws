@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ErrorResponse xmlns="http://mws.amazonservices.com/schema/Products/2011-10-01">
+<Error>
+  <Type>Sender</Type>
+  <Code>InvalidParameterValue</Code>
+  <Message>Value for parameter MarketplaceId is not valid: ATVPDKIKX0DE</Message>
+  <Detail/>
+</Error>
+<RequestID>85c254bd-8214-49a3-95d2-9fadsdad566110</RequestID>
+</ErrorResponse>
