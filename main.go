@@ -33,9 +33,25 @@ func main() {
 
 	fmt.Println("------GetMatchingProduct------")
 	response = productsClient.GetMatchingProduct([]string{"B00ON8R5EO", "B000EVOSE4"})
+	// Check http response error
 	if response.Error != nil {
 		fmt.Println(response.Error.Error())
 	}
+
 	xmlParser = gmws.NewXMLParser(response)
-	xmlParser.PrettyPrint()
+	// Check whether or not API send back error message
+	if xmlParser.HasError() {
+		fmt.Println(xmlParser.GetError())
+	}
+
+	gmp := products.GetMatchingProductResult{}
+	xmlParser.Parse(&gmp)
+	// Individual result might have error
+	for _, r := range gmp.Results {
+		if r.Error != nil {
+			fmt.Println(r.Error)
+		} else {
+			fmt.Println(r.Products)
+		}
+	}
 }
