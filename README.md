@@ -40,13 +40,23 @@ fmt.Println(response.Result())
 ```
 
 Use parser to convert result to struct.
-Ex: ListOrders response from orders api
 ```go
-xmlParser := gmws.NewXMLParser(response)
-xmlParser.PrettyPrint()
-resultStruct := ListOrdersResult{}
-xmlParser.Parse(&resultStruct)
-resultStruct.Orders
+xmlParser = gmws.NewXMLParser(response)
+// Check whether or not API send back error message
+if xmlParser.HasError() {
+  fmt.Println(xmlParser.GetError())
+}
+
+gmp := products.GetMatchingProductResult{}
+xmlParser.Parse(&gmp)
+// Individual result might have error
+for _, r := range gmp.Results {
+  if r.Error != nil {
+    fmt.Println(r.Error)
+  } else {
+    fmt.Println(r.Products)
+  }
+}
 ```
 
 # APIs
