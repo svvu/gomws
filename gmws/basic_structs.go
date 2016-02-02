@@ -44,7 +44,7 @@ func LoadExample(filePath string, v interface{}) (interface{}, error) {
 	if ferr != nil {
 		return v, ferr
 	}
-	resp := &mwsHttps.Response{Result: string(response)}
+	resp := &mwsHttps.Response{Body: response}
 	xmlParser := NewXMLParser(resp)
 	err := xmlParser.Parse(v)
 	if err != nil {
