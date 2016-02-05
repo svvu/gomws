@@ -14,7 +14,7 @@ func getErrorResponse() *mwsHttps.Response {
 	if ferr != nil {
 		fmt.Println(ferr)
 	}
-	resp := &mwsHttps.Response{Result: string(response)}
+	resp := &mwsHttps.Response{Body: response}
 	return resp
 }
 
@@ -23,7 +23,7 @@ func getNormalResponse() *mwsHttps.Response {
 	if ferr != nil {
 		fmt.Println(ferr)
 	}
-	resp := &mwsHttps.Response{Result: string(response)}
+	resp := &mwsHttps.Response{Body: response}
 	return resp
 }
 
