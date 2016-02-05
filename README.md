@@ -1,6 +1,8 @@
 # gomws
 Amazon mws API in Go
 
+[![Build Status](https://travis-ci.org/svvu/gomws.svg?branch=master)](https://travis-ci.org/svvu/gomws)
+
 # Usage
 Import the packages
 ```go
