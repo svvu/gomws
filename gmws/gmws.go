@@ -1,8 +1,10 @@
 package gmws
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/kr/pretty"
 	"github.com/svvu/gomws/mwsHttps"
 )
 
@@ -42,4 +44,9 @@ func GetCredential() Credential {
 	credential.SecretKey = os.Getenv(envSecretKey)
 
 	return credential
+}
+
+// Inspect print out the value in a user friendly way.
+func Inspect(value interface{}) {
+	fmt.Printf("%# v", pretty.Formatter(value))
 }
