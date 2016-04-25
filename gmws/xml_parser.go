@@ -1,3 +1,5 @@
+// Deprecated
+
 package gmws
 
 import (

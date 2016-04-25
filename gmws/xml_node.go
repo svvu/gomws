@@ -13,6 +13,9 @@ import (
 
 // XMLNode is wrapper to mxj map.
 // It can traverse the xml to get the data.
+// NOTE:
+// All attributes will also become a node with key '-attributesName'.
+// And tags with attributes, their value will become a node with key '#text'.
 type XMLNode struct {
 	Value interface{}
 	Path  string
@@ -26,9 +29,9 @@ func GenerateXMLNode(xmlBuffer []byte) (*XMLNode, error) {
 	return &xNode, err
 }
 
-// Key return the key (tag) for the current node.
+// CurrentKey return the key (tag) for the current node.
 // Root node has empty key.
-func (xn *XMLNode) Key() string {
+func (xn *XMLNode) CurrentKey() string {
 	keys := strings.Split(xn.Path, ".")
 	return keys[len(keys)-1]
 }
@@ -57,7 +60,10 @@ func (xn *XMLNode) FindByKey(key string) ([]XMLNode, error) {
 
 // FindByPath get the element data by path string.
 // Path is relative to the current XMLNode.
+// Path need to be start with direct sub node of current node.
 // Path is separated by '.', ex: "Tag1.Tag2.Tag3".
+// If current node is "A", and has sub path "B.C", then query on "B.C" will
+// 	return node C. But Query on "C" will return empty nodes.
 // The method return a list XMLNode, each node represents all the sub-elements
 // 	of the match key. The nodes then can be use to traverse deeper individually.
 func (xn *XMLNode) FindByPath(path string) ([]XMLNode, error) {
@@ -97,6 +103,7 @@ func (xn *XMLNode) Elements() []string {
 	if err != nil {
 		return []string{}
 	}
+
 	elements, err := xnode.Elements("")
 	if err != nil {
 		return []string{}
@@ -145,6 +152,19 @@ func (xn *XMLNode) ValueType() reflect.Kind {
 
 // ToMap convert the node value to a mxj map.
 // If fail to convert, an error will be returned.
+// Tags have no sub tag, but have attributes is also a map.
+// Attributes of the tag has key '-attributesName'.
+// Tags' value has key '#test'.
+// Ex:
+// 		<MessageId MarketplaceID="ATVPDKDDIKX0D" SKU="24478624">
+// 			173964729
+// 		</MessageId>
+// After to map,
+// 		map[string]string{
+// 			"-MarketplaceID": "ATVPDKDDIKX0D",
+// 			"-SKU": "24478624",
+// 			"#text": "173964729",
+// 		}
 func (xn *XMLNode) ToMap() (mxj.Map, error) {
 	if xn.ValueType() == reflect.Map {
 		return mxj.Map(xn.Value.(map[string]interface{})), nil
@@ -207,15 +227,44 @@ func (xn *XMLNode) ToTime() (time.Time, error) {
 	return t, err
 }
 
-// ToStruct
+// ToStruct unmarshal the node value to struct.
+// If value can not be unmarshal, an error will returned.
+// ToStruct use json tag to unmarshal the map.
+// Ex:
+// To unmarshal the tag:
+// 		<MessageId MarketplaceID="ATVPDKDDIKX0D" SKU="24478624">
+// 			173964729
+// 		</MessageId>
+// Can use struct:
+// 		msgID := struct {
+// 			MarketplaceID string `json:"-MarketplaceID"`
+// 			SKU           string `json:"-SKU"`
+// 			ID            string `json:"#text"`
+// 		}{}
+func (xn *XMLNode) ToStruct(structPtr interface{}) error {
+	xmap, err := xn.ToMap()
+	if err != nil {
+		return errors.New("Value can not be unmarshal to struct.")
+	}
+	return xmap.Struct(structPtr)
+}
 
 // XML return the raw xml data.
+// If current node has key, use it as root node tag.
+// If current node doest has key, and only have one child node, then the child
+// 	node's key will become root node tag.
+// If current node doest has key, and have more than one child node, then
+// 	the a default tag <doc> will use as root tag.
 func (xn *XMLNode) XML() ([]byte, error) {
 	xmap, err := xn.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
-	return xmap.Xml()
+	rootTag := xn.CurrentKey()
+	if rootTag == "" {
+		return xmap.Xml()
+	}
+	return xmap.Xml(rootTag)
 }
 
 // PrintXML print the xml with two space indention.
