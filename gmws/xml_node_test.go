@@ -56,7 +56,7 @@ func Test_CurrentKey(t *testing.T) {
 	})
 
 	Convey("Message tag's key should be Message", t, func() {
-		msgNodes, _ := xNode.FindByKey("Message")
+		msgNodes := xNode.FindByKey("Message")
 		msgNode := msgNodes[0]
 		key := msgNode.CurrentKey()
 		So(key, ShouldEqual, "Message")
@@ -67,11 +67,7 @@ func Test_FindByKey(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Find by key 'Status'", t, func() {
-		fNodes, err := xNode.FindByKey("Status")
-
-		Convey("Error should be nil", func() {
-			So(err, ShouldBeNil)
-		})
+		fNodes := xNode.FindByKey("Status")
 
 		Convey("Should have 1 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 1)
@@ -84,11 +80,7 @@ func Test_FindByKey(t *testing.T) {
 	})
 
 	Convey("Find by key 'Message'", t, func() {
-		fNodes, err := xNode.FindByKey("Message")
-
-		Convey("Error should be nil", func() {
-			So(err, ShouldBeNil)
-		})
+		fNodes := xNode.FindByKey("Message")
 
 		Convey("Should have 4 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 4)
@@ -96,11 +88,7 @@ func Test_FindByKey(t *testing.T) {
 	})
 
 	Convey("Find by key 'NotExistKey'", t, func() {
-		fNodes, err := xNode.FindByKey("NotExistKey")
-
-		Convey("Error should be nil", func() {
-			So(err, ShouldBeNil)
-		})
+		fNodes := xNode.FindByKey("NotExistKey")
 
 		Convey("Should have 0 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 0)
@@ -108,13 +96,44 @@ func Test_FindByKey(t *testing.T) {
 	})
 
 	Convey("Node's value is not a valid map", t, func() {
-		fNodes, _ := xNode.FindByKey("Status")
-		fNodes, err := fNodes[0].FindByKey("Status")
+		fNodes := xNode.FindByKey("Status")
+		fNodes = fNodes[0].FindByKey("Status")
 
-		Convey("Error should not be nil", func() {
-			So(err, ShouldNotBeNil)
+		Convey("Should have 0 nodes found", func() {
+			So(fNodes, ShouldHaveLength, 0)
+		})
+	})
+}
+
+func Test_FindByKeys(t *testing.T) {
+	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
+
+	Convey("Find by key 'Message2', 'Text'", t, func() {
+		fNodes := xNode.FindByKeys("Message2", "Text")
+
+		Convey("Should have 1 nodes found", func() {
+			So(fNodes, ShouldHaveLength, 1)
 		})
 
+		Convey("Node found's value is string 'Error message 5'", func() {
+			v, _ := fNodes[0].ToString()
+			So(v, ShouldEqual, "Error message 5")
+		})
+	})
+
+	Convey("Find by keys 'Message', 'Text'", t, func() {
+		// Text under message2 will be ignored
+		fNodes := xNode.FindByKeys("Message", "Text")
+
+		Convey("Should have 4 nodes found", func() {
+			So(fNodes, ShouldHaveLength, 4)
+		})
+	})
+
+	Convey("Find by key 'Message', 'Messages'", t, func() {
+		fNodes := xNode.FindByKeys("Message", "Messages")
+
+		// Messages is not child node of Message.
 		Convey("Should have 0 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 0)
 		})
@@ -125,12 +144,8 @@ func Test_FindByPath(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Find by path Message.Locale", t, func() {
-		fNodes, _ := xNode.FindByKey("Messages")
-		fNodes, err := fNodes[0].FindByPath("Message.Locale")
-
-		Convey("Error should be nil", func() {
-			So(err, ShouldBeNil)
-		})
+		fNodes := xNode.FindByKey("Messages")
+		fNodes = fNodes[0].FindByPath("Message.Locale")
 
 		Convey("Should have 4 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 4)
@@ -138,11 +153,7 @@ func Test_FindByPath(t *testing.T) {
 	})
 
 	Convey("When query path is not direct path of current node", t, func() {
-		fNodes, err := xNode.FindByPath("Messages.Message.Locale")
-
-		Convey("Error should be nil", func() {
-			So(err, ShouldBeNil)
-		})
+		fNodes := xNode.FindByPath("Messages.Message.Locale")
 
 		Convey("Should have 0 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 0)
@@ -150,14 +161,10 @@ func Test_FindByPath(t *testing.T) {
 	})
 
 	Convey("Node's value is not a valid map", t, func() {
-		fNodes, _ := xNode.FindByPath(
+		fNodes := xNode.FindByPath(
 			"GetServiceStatusResponse.GetServiceStatusResult.Status",
 		)
-		fNodes, err := fNodes[0].FindByPath("Status")
-
-		Convey("Error should not be nil", func() {
-			So(err, ShouldNotBeNil)
-		})
+		fNodes = fNodes[0].FindByPath("Status")
 
 		Convey("Should have 0 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 0)
@@ -167,18 +174,14 @@ func Test_FindByPath(t *testing.T) {
 
 func Test_FindByFullPath(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
-	fNode, _ := xNode.FindByPath(
+	fNode := xNode.FindByPath(
 		"GetServiceStatusResponse.GetServiceStatusResult.Messages",
 	)
 
 	Convey("Find by path Message.Locale", t, func() {
-		fNodes, err := fNode[0].FindByFullPath(
+		fNodes := fNode[0].FindByFullPath(
 			"GetServiceStatusResponse.GetServiceStatusResult.Messages.Message.Locale",
 		)
-
-		Convey("Error should be nil", func() {
-			So(err, ShouldBeNil)
-		})
 
 		Convey("Should have 4 nodes found", func() {
 			So(fNodes, ShouldHaveLength, 4)
@@ -190,11 +193,11 @@ func Test_Elements(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Elements of Messages", t, func() {
-		fNode, _ := xNode.FindByKey("Messages")
+		fNode := xNode.FindByKey("Messages")
 		elements := fNode[0].Elements()
 
-		Convey("Should have 1 key", func() {
-			So(elements, ShouldHaveLength, 1)
+		Convey("Should have 2 key", func() {
+			So(elements, ShouldHaveLength, 2)
 		})
 
 		Convey("Should be Message", func() {
@@ -203,7 +206,7 @@ func Test_Elements(t *testing.T) {
 	})
 
 	Convey("Elements of Message", t, func() {
-		fNode, _ := xNode.FindByKey("Message")
+		fNode := xNode.FindByKey("Message")
 		elements := fNode[0].Elements()
 
 		Convey("Should have 2 keys", func() {
@@ -224,13 +227,13 @@ func Test_IsLeaf(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Messages tag is not leaf", t, func() {
-		fNode, _ := xNode.FindByKey("Messages")
+		fNode := xNode.FindByKey("Messages")
 
 		So(fNode[0].IsLeaf(), ShouldBeFalse)
 	})
 
 	Convey("Text tag is leaf", t, func() {
-		fNode, _ := xNode.FindByKey("Text")
+		fNode := xNode.FindByKey("Text")
 
 		So(fNode[0].IsLeaf(), ShouldBeTrue)
 	})
@@ -243,13 +246,13 @@ func Test_LeafPaths(t *testing.T) {
 		leafPaths := xNode.LeafPaths()
 
 		// 15 tags and 2 attributes.
-		Convey("Should have 17 leaves", func() {
-			So(leafPaths, ShouldHaveLength, 17)
+		Convey("Should have 19 leaves", func() {
+			So(leafPaths, ShouldHaveLength, 19)
 		})
 	})
 
 	Convey("Leaf node", t, func() {
-		fNode, _ := xNode.FindByKey("Text")
+		fNode := xNode.FindByKey("Text")
 		leafPaths := fNode[0].LeafPaths()
 
 		Convey("Should have no leaf", func() {
@@ -265,13 +268,13 @@ func Test_LeafNodes(t *testing.T) {
 		leafNodes := xNode.LeafNodes()
 
 		// 15 tags and 2 attributes.
-		Convey("Should have 17 leaf nodes", func() {
-			So(leafNodes, ShouldHaveLength, 17)
+		Convey("Should have 19 leaf nodes", func() {
+			So(leafNodes, ShouldHaveLength, 19)
 		})
 	})
 
 	Convey("Leaf node", t, func() {
-		fNode, _ := xNode.FindByKey("Text")
+		fNode := xNode.FindByKey("Text")
 		leafNodes := fNode[0].LeafNodes()
 
 		Convey("Should have no leaf", func() {
@@ -288,7 +291,7 @@ func Test_ValueType(t *testing.T) {
 	})
 
 	Convey("Value is string", t, func() {
-		fNode, _ := xNode.FindByKey("Locale")
+		fNode := xNode.FindByKey("Locale")
 		So(fNode[0].ValueType(), ShouldEqual, reflect.String)
 	})
 }
@@ -309,7 +312,7 @@ func Test_ToMap(t *testing.T) {
 	})
 
 	Convey("Value is not a map", t, func() {
-		fNode, _ := xNode.FindByKey("Locale")
+		fNode := xNode.FindByKey("Locale")
 
 		node, err := fNode[0].ToMap()
 
@@ -327,7 +330,7 @@ func Test_ToString(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is a string", t, func() {
-		fNode, _ := xNode.FindByKey("Locale")
+		fNode := xNode.FindByKey("Locale")
 
 		s, err := fNode[0].ToString()
 
@@ -357,7 +360,7 @@ func Test_ToInt(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is a int", t, func() {
-		fNode, _ := xNode.FindByKey("-SKU")
+		fNode := xNode.FindByKey("-SKU")
 
 		i, err := fNode[0].ToInt()
 
@@ -387,7 +390,7 @@ func Test_ToFloat(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is a float", t, func() {
-		fNode, _ := xNode.FindByKey("UpHour")
+		fNode := xNode.FindByKey("UpHour")
 
 		i, err := fNode[0].ToFloat()
 
@@ -417,7 +420,7 @@ func Test_ToBool(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is a bool", t, func() {
-		fNode, _ := xNode.FindByKey("UP")
+		fNode := xNode.FindByKey("UP")
 
 		i, err := fNode[0].ToBool()
 
@@ -447,7 +450,7 @@ func Test_ToTime(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is timestamp", t, func() {
-		fNode, _ := xNode.FindByKey("Timestamp")
+		fNode := xNode.FindByKey("Timestamp")
 
 		i, err := fNode[0].ToTime()
 
@@ -481,7 +484,7 @@ func Test_ToStruct(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is not a map", t, func() {
-		fNode, _ := xNode.FindByKey("Timestamp")
+		fNode := xNode.FindByKey("Timestamp")
 
 		err := fNode[0].ToStruct(&msg)
 
@@ -495,7 +498,7 @@ func Test_ToStruct(t *testing.T) {
 	})
 
 	Convey("Value is a map", t, func() {
-		fNode, _ := xNode.FindByKey("Message")
+		fNode := xNode.FindByKey("Message")
 
 		err := fNode[0].ToStruct(&msg)
 
@@ -518,7 +521,7 @@ func Test_ToStruct(t *testing.T) {
 			SKU           string `json:"-SKU"`
 			ID            string `json:"#text"`
 		}{}
-		fNode, _ := xNode.FindByKey("MessageId")
+		fNode := xNode.FindByKey("MessageId")
 
 		err := fNode[0].ToStruct(&msgID)
 
@@ -542,7 +545,7 @@ func Test_ToStruct(t *testing.T) {
 
 func Test_XML(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
-	fNode, _ := xNode.FindByKey("Message")
+	fNode := xNode.FindByKey("Message")
 
 	Convey("Value is not a map", t, func() {
 		xml, err := fNode[0].XML()

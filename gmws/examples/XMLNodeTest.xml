@@ -21,6 +21,10 @@
         <Locale>en_US</Locale>
         <Text>Error message 4</Text>
       </Message>
+      <Message2>
+        <Locale>en_US</Locale>
+        <Text>Error message 5</Text>
+      </Message2>
     </Messages>
     <UP>True</UP>
     <UpHour>2.3</UpHour>

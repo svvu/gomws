@@ -39,23 +39,53 @@ func (xn *XMLNode) CurrentKey() string {
 // FindByKey get the element data by any key (tag) in any depth.
 // The method return a list XMLNode, each node represents all the sub-elements
 // 	of the match key. The nodes then can be use to traverse deeper individually.
-func (xn *XMLNode) FindByKey(key string) ([]XMLNode, error) {
+func (xn *XMLNode) FindByKey(key string) []XMLNode {
+	valuesMap := []XMLNode{}
+
 	xnode, err := xn.ToMap()
 	if err != nil {
-		return nil, errors.New("Node can't traverse deeper.")
+		return valuesMap
 	}
 
 	paths := xnode.PathsForKey(key)
-	valuesMap := []XMLNode{}
 	for _, p := range paths {
-		nodes, err := xn.FindByPath(p)
-		if err != nil {
-			return nil, err
-		}
+		nodes := xn.FindByPath(p)
 		valuesMap = append(valuesMap, nodes...)
 	}
 
-	return valuesMap, nil
+	return valuesMap
+}
+
+// FindByKeys get the element data by any keys (tag) in any depth.
+// Subsequential key need to be child of previous.
+// The method return a list XMLNode, each node represents all the sub-elements
+// 	of the match key. The nodes then can be use to traverse deeper individually.
+// Ex:
+//	If current node have path "A.B.C.D.E" and "A.B2.C2.D2.E",
+// 	then node.FindByKeys("B", "E") will return nodes E under first path.
+func (xn *XMLNode) FindByKeys(keys ...string) []XMLNode {
+	valuesMap := []XMLNode{}
+
+	if len(keys) <= 0 {
+		return valuesMap
+	}
+
+	lastIndex := len(keys) - 1
+	nodes := xn.FindByKey(keys[lastIndex])
+	keysCheck := keys[0:lastIndex]
+
+NodeLoop:
+	for _, node := range nodes {
+		pathKeys := strings.Split(node.Path, ".")
+		for _, key := range keysCheck {
+			if !stringInSlice(key, pathKeys) {
+				continue NodeLoop
+			}
+		}
+		valuesMap = append(valuesMap, node)
+	}
+
+	return valuesMap
 }
 
 // FindByPath get the element data by path string.
@@ -66,24 +96,25 @@ func (xn *XMLNode) FindByKey(key string) ([]XMLNode, error) {
 // 	return node C. But Query on "C" will return empty nodes.
 // The method return a list XMLNode, each node represents all the sub-elements
 // 	of the match key. The nodes then can be use to traverse deeper individually.
-func (xn *XMLNode) FindByPath(path string) ([]XMLNode, error) {
+func (xn *XMLNode) FindByPath(path string) []XMLNode {
+	valuesMap := []XMLNode{}
+
 	xnode, err := xn.ToMap()
 	if err != nil {
-		return nil, errors.New("Node can't traverse deeper.")
+		return valuesMap
 	}
 
 	values, err := xnode.ValuesForPath(path)
 	if err != nil {
-		return nil, err
+		return valuesMap
 	}
 
-	valuesMap := make([]XMLNode, len(values))
-	for i, m := range values {
+	for _, m := range values {
 		node := XMLNode{Value: m, Path: path}
-		valuesMap[i] = node
+		valuesMap = append(valuesMap, node)
 	}
 
-	return valuesMap, nil
+	return valuesMap
 }
 
 // FindByFullPath get the element data by absolute path.
@@ -92,7 +123,7 @@ func (xn *XMLNode) FindByPath(path string) ([]XMLNode, error) {
 // 	then the method will search elements in current node with path "D.E".
 // The method return a list XMLNode, each node represents all the sub-elements
 // 	of the match key. The nodes then can be use to traverse deeper individually.
-func (xn *XMLNode) FindByFullPath(path string) ([]XMLNode, error) {
+func (xn *XMLNode) FindByFullPath(path string) []XMLNode {
 	subPath := strings.Replace(path, xn.Path+".", "", 1)
 	return xn.FindByPath(subPath)
 }
@@ -188,7 +219,7 @@ func (xn *XMLNode) ToString() (string, error) {
 func (xn *XMLNode) ToInt() (int, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return 0, errors.New("Value is not a valid int.")
+		return 0, errors.New("Can not convert value to int.")
 	}
 	i, err := strconv.Atoi(value)
 	return i, err
@@ -199,7 +230,7 @@ func (xn *XMLNode) ToInt() (int, error) {
 func (xn *XMLNode) ToFloat() (float64, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return 0, errors.New("Value is not a valid float.")
+		return 0, errors.New("Can not convert value to float64.")
 	}
 	f, err := strconv.ParseFloat(value, 64)
 	return f, err
@@ -210,7 +241,7 @@ func (xn *XMLNode) ToFloat() (float64, error) {
 func (xn *XMLNode) ToBool() (bool, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return false, errors.New("Value is not a valid bool.")
+		return false, errors.New("Can not convert value to bool.")
 	}
 	b, err := strconv.ParseBool(value)
 	return b, err
@@ -221,7 +252,7 @@ func (xn *XMLNode) ToBool() (bool, error) {
 func (xn *XMLNode) ToTime() (time.Time, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return time.Time{}, errors.New("Value is not a valid time.")
+		return time.Time{}, errors.New("Can not convert value to time.")
 	}
 	t, err := time.Parse(time.RFC3339, value)
 	return t, err
@@ -275,4 +306,13 @@ func (xn *XMLNode) PrintXML() {
 	}
 	xml, _ := xmap.XmlIndent("", "  ")
 	fmt.Println(string(xml))
+}
+
+func stringInSlice(s string, slice []string) bool {
+	for _, str := range slice {
+		if s == str {
+			return true
+		}
+	}
+	return false
 }

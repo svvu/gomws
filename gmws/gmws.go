@@ -54,8 +54,8 @@ func Inspect(value interface{}) {
 // HasErrors will check whether or not the xml node tree has any erorr node.
 // If it contains errors, true will be returned.
 func HasErrors(xmlNode *XMLNode) bool {
-	errorNodes, err := xmlNode.FindByKey("Error")
-	if err != nil || len(errorNodes) > 0 {
+	errorNodes := xmlNode.FindByKey("Error")
+	if len(errorNodes) > 0 {
 		return true
 	}
 	return false
@@ -63,15 +63,12 @@ func HasErrors(xmlNode *XMLNode) bool {
 
 // GetErrors will return an array of Error struct from the xml node tree.
 func GetErrors(xmlNode *XMLNode) ([]Error, error) {
-	errorNodes, err := xmlNode.FindByKey("Error")
-	if err != nil {
-		return nil, err
-	}
+	errorNodes := xmlNode.FindByKey("Error")
 
 	errors := []Error{}
 	for _, en := range errorNodes {
 		error := Error{}
-		err = en.ToStruct(&error)
+		err := en.ToStruct(&error)
 		if err != nil {
 			return errors, err
 		}
