@@ -56,7 +56,6 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Printf("Product name: %v \n", name)
-	productOne.PrintXML()
 
 	// Find the height for package dimensions.
 	heightNode := productOne.FindByKeys("PackageDimensions", "Height")
