@@ -128,6 +128,7 @@ func (client *Client) buildRequest() (*http.Request, error) {
 		return nil, err
 	}
 
+	// Add content headers.
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Content-Length", strconv.Itoa(len(encodedParams)))
 
@@ -138,24 +139,29 @@ func (client *Client) buildRequest() (*http.Request, error) {
 // If the query is indicated un signed, an error will return.
 func (client *Client) Send() *Response {
 	response := new(Response)
+	// Check whether or not the query is signed, if not, return error
 	signatureErr := client.checkSignStatus()
 	if signatureErr != nil {
 		response.Error = signatureErr
 		return response
 	}
 
+	// Set the request header for the encoded param string.
+	// For debug and other reference.
 	response.RequestHeader = client.parameters.Encode()
 
 	if client.Client == nil {
 		client.Client = &http.Client{}
 	}
 
+	// Build the http request with request params and add content header.
 	req, err := client.buildRequest()
 	if err != nil {
 		response.Error = err
 		return response
 	}
 
+	// Send the request and parse the response.
 	resp, err := client.Client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
@@ -167,6 +173,7 @@ func (client *Client) Send() *Response {
 }
 
 func (client *Client) parseResponse(response *Response, resp *http.Response) *Response {
+	// Set meta data.
 	response.Status = resp.Status
 	response.StatusCode = resp.StatusCode
 	response.Header = resp.Header
@@ -175,6 +182,7 @@ func (client *Client) parseResponse(response *Response, resp *http.Response) *Re
 		response.Error = fmt.Errorf("Request not success. Reason: %v", resp.Status)
 	}
 
+	// Parse the body.
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		response.Error = err

@@ -174,6 +174,7 @@ The Orders API returns orders list, items info in the order, and a variety of ot
 
 # TODO
 * Add support for other APIs
+* Record api request to test the endpoint methods
 
 # Deprecated
 The build in structs to unmarshal the result are deprecated. They still can be found in branch 0.0.3.
