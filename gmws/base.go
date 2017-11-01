@@ -33,10 +33,6 @@ func NewMwsBase(config MwsConfig, version, name string) (*MwsBase, error) {
 		return nil, fmt.Errorf("No seller id provided")
 	}
 
-	if config.AuthToken == "" {
-		return nil, fmt.Errorf("No auth token provided")
-	}
-
 	region := config.Region
 	if region == "" {
 		region = "US"
@@ -85,13 +81,24 @@ func (base MwsBase) SignatureVersion() string {
 
 // paramsToAugment generate a list of client information add to the query.
 func (base MwsBase) paramsToAugment() map[string]string {
-	clientInfo := map[string]string{
-		"SellerId":         base.SellerId,
-		"MWSAuthToken":     base.AuthToken,
-		"SignatureMethod":  base.SignatureMethod(),
-		"SignatureVersion": base.SignatureVersion(),
-		"AWSAccessKeyId":   base.getCredential().AccessKey,
-		"Version":          base.Version,
+	var clientInfo map[string]string
+	if base.AuthToken == "" {
+		clientInfo = map[string]string{
+			"SellerId":         base.SellerId,
+			"SignatureMethod":  base.SignatureMethod(),
+			"SignatureVersion": base.SignatureVersion(),
+			"AWSAccessKeyId":   base.getCredential().AccessKey,
+			"Version":          base.Version,
+		}
+	} else {
+		clientInfo = map[string]string{
+			"SellerId":         base.SellerId,
+			"MWSAuthToken":     base.AuthToken,
+			"SignatureMethod":  base.SignatureMethod(),
+			"SignatureVersion": base.SignatureVersion(),
+			"AWSAccessKeyId":   base.getCredential().AccessKey,
+			"Version":          base.Version,
+		}
 	}
 	return clientInfo
 }
