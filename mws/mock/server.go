@@ -13,13 +13,22 @@ import (
 // Server a mock server to capture request to API.
 type Server struct {
 	*httptest.Server
-	response        *http.Response
 	responseHandler func(r *http.Request) *http.Response
 }
 
 // SetResponse set the response for the incoming requests.
+// The method cached the response body value and reset the body to support
+// 	multiple times of requests.
 func (ms *Server) SetResponse(resp *http.Response) {
-	ms.response = resp
+	body, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	ms.responseHandler = func(r *http.Request) *http.Response {
+		if err == nil {
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+		}
+		return resp
+	}
 }
 
 // SetResponseHandler set a handler to update reponse base on request info.
@@ -34,19 +43,24 @@ func (ms *Server) Host() string {
 
 // NewServer create and start a new mock Server.
 func NewServer() *Server {
-	server := &Server{response: &http.Response{}}
+	server := &Server{}
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		resp := server.response
+		var resp *http.Response
 
-		if server.responseHandler != nil {
+		if server.responseHandler == nil {
+			resp = &http.Response{}
+		} else {
 			resp = server.responseHandler(r)
 		}
 
 		for k, v := range resp.Header {
 			w.Header()[k] = v
 		}
+
 		body, err := ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
+
 		if err != nil {
 			w.WriteHeader(500)
 			fmt.Fprint(w, err.Error())
