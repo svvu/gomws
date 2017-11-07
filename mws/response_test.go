@@ -58,8 +58,6 @@ func TestResponse_WriteBodyTo(t *testing.T) {
 }
 
 func TestParseResponseError(t *testing.T) {
-	// mwsErrorBody := ioutil.NopCloser(bytes.NewBufferString("<Error><Message>foo</Message></Error>"))
-
 	testCases := []struct {
 		desc       string
 		input      *http.Response
