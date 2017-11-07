@@ -1,4 +1,4 @@
-package mwsHttps
+package mws
 
 import (
 	"crypto/hmac"

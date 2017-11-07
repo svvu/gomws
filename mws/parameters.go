@@ -1,4 +1,4 @@
-package gmws
+package mws
 
 import (
 	"fmt"
@@ -6,8 +6,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/svvu/gomws/mwsHttps"
 )
 
 // formatParameterKey combine the base key and the augument keys by '.'.
@@ -91,8 +89,8 @@ func (params Parameters) StructureKeys(baseKey string, keys ...string) Parameter
 // Normalize convert all the values to string, if a value can't not
 // convert to string, an error will be returned.
 // Float will round to 2 decimal precision.
-func (params Parameters) Normalize() (mwsHttps.Values, error) {
-	nParams := mwsHttps.NewValues()
+func (params Parameters) Normalize() (Values, error) {
+	nParams := NewValues()
 	var stringVal string
 	for key, val := range params {
 		switch t := val.(type) {
@@ -125,7 +123,7 @@ func (params Parameters) Normalize() (mwsHttps.Values, error) {
 //
 // If the key appear in mulit parameters, later one will override the previous.
 // Ex:
-// 		ps := []mwsHttps.Parameters{
+// 		ps := []Parameters{
 // 			{"key1": "value1", "key2": "value2"},
 // 			{"key1": "newValue1", "key3": "value3"},
 // 		}

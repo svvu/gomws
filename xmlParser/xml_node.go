@@ -1,4 +1,4 @@
-package gmws
+package xmlParser
 
 import (
 	"errors"
@@ -215,7 +215,7 @@ func (xn *XMLNode) ToMap() (mxj.Map, error) {
 		return mxj.Map(xn.Value.(map[string]interface{})), nil
 	}
 
-	return nil, errors.New("Value is not a map.")
+	return nil, errors.New("value is not a map")
 }
 
 // ToString convert the node value to string.
@@ -225,7 +225,7 @@ func (xn *XMLNode) ToString() (string, error) {
 		return xn.Value.(string), nil
 	}
 
-	return "", errors.New("Value is not a valid string.")
+	return "", errors.New("value is not a valid string")
 }
 
 // ToInt convert the node value to int.
@@ -233,7 +233,7 @@ func (xn *XMLNode) ToString() (string, error) {
 func (xn *XMLNode) ToInt() (int, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return 0, errors.New("Can not convert value to int.")
+		return 0, errors.New("can not convert value to int")
 	}
 	i, err := strconv.Atoi(value)
 	return i, err
@@ -244,7 +244,7 @@ func (xn *XMLNode) ToInt() (int, error) {
 func (xn *XMLNode) ToFloat() (float64, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return 0, errors.New("Can not convert value to float64.")
+		return 0, errors.New("can not convert value to float64")
 	}
 	f, err := strconv.ParseFloat(value, 64)
 	return f, err
@@ -255,7 +255,7 @@ func (xn *XMLNode) ToFloat() (float64, error) {
 func (xn *XMLNode) ToBool() (bool, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return false, errors.New("Can not convert value to bool.")
+		return false, errors.New("can not convert value to bool")
 	}
 	b, err := strconv.ParseBool(value)
 	return b, err
@@ -266,7 +266,7 @@ func (xn *XMLNode) ToBool() (bool, error) {
 func (xn *XMLNode) ToTime() (time.Time, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return time.Time{}, errors.New("Can not convert value to time.")
+		return time.Time{}, errors.New("can not convert value to time")
 	}
 	t, err := time.Parse(time.RFC3339, value)
 	return t, err
@@ -291,7 +291,7 @@ Can use struct:
 func (xn *XMLNode) ToStruct(structPtr interface{}) error {
 	xmap, err := xn.ToMap()
 	if err != nil {
-		return errors.New("Value can not be unmarshal to struct.")
+		return errors.New("value can not be unmarshal to struct")
 	}
 	return xmap.Struct(structPtr)
 }

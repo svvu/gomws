@@ -1,4 +1,4 @@
-package gmws
+package xmlParser
 
 import (
 	"fmt"

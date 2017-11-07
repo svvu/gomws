@@ -1,4 +1,4 @@
-package marketplace
+package mws
 
 import (
 	"fmt"
@@ -32,14 +32,14 @@ var MarketPlaceIds = map[string]string{
 	"CN": "AAHKV2X7AFYLW",
 }
 
-// Error for marketplace.
+// MarketPlaceError for marketplace.
 // There are two type of errors: marketplace id error and region error.
-type Error struct {
+type MarketPlaceError struct {
 	errorType string
 	value     string
 }
 
-func (e Error) Error() string {
+func (e MarketPlaceError) Error() string {
 	return fmt.Sprintf("Invalid %v: %v", e.errorType, e.value)
 }
 
@@ -50,8 +50,8 @@ type MarketPlace struct {
 	EndPoint string
 }
 
-// New create a new marketplace base on the region.
-func New(region string) (*MarketPlace, error) {
+// NewMarketPlace create a new marketplace base on the region.
+func NewMarketPlace(region string) (*MarketPlace, error) {
 	mp := MarketPlace{Region: region}
 
 	marketPlaceId, idError := mp.MarketPlaceId()
@@ -76,7 +76,7 @@ func (mp *MarketPlace) MarketPlaceEndPoint() (string, error) {
 	if val, ok := EndPoints[mp.Id]; ok {
 		return val, nil
 	}
-	return "", Error{"marketplace id", mp.Id}
+	return "", MarketPlaceError{"marketplace id", mp.Id}
 }
 
 // MarketPlaceId get the marketpalce id for the region.
@@ -87,7 +87,7 @@ func (mp *MarketPlace) MarketPlaceId() (string, error) {
 	if val, ok := MarketPlaceIds[mp.Region]; ok {
 		return val, nil
 	}
-	return "", Error{"region", mp.Region}
+	return "", MarketPlaceError{"region", mp.Region}
 }
 
 // Encoding get the ecoding for file upload and parsing
