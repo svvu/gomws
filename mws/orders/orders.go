@@ -3,23 +3,22 @@
 package orders
 
 import (
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
+	"github.com/svvu/gomws/mws"
 )
 
 // Orders is the client for the api
 type Orders struct {
-	*gmws.MwsBase
+	*mws.Client
 }
 
 // NewClient generate a new orders client
-func NewClient(config gmws.MwsConfig) (*Orders, error) {
+func NewClient(config mws.Config) (*Orders, error) {
 	orders := new(Orders)
-	base, err := gmws.NewMwsBase(config, orders.Version(), orders.Name())
+	base, err := mws.NewClient(config, orders.Version(), orders.Name())
 	if err != nil {
 		return nil, err
 	}
-	orders.MwsBase = base
+	orders.Client = base
 	return orders, nil
 }
 
@@ -35,8 +34,8 @@ func (o Orders) Name() string {
 
 // GetServiceStatus Returns the operational status of the Orders API section.
 // http://docs.developer.amazonservices.com/en_US/orders/2013-09-01/MWS_GetServiceStatus.html
-func (o Orders) GetServiceStatus() *mwsHttps.Response {
-	params := gmws.Parameters{
+func (o Orders) GetServiceStatus() (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action": "GetServiceStatus",
 	}
 
@@ -76,15 +75,15 @@ func (o Orders) GetServiceStatus() *mwsHttps.Response {
 // 	TFMShipmentStatus - []string.
 // 		Values: PendingPickUp, LabelCanceled, PickedUp, AtDestinationFC,
 // 		Delivered, RejectedByBuyer, Undeliverable, ReturnedToSeller, Lost.
-func (o Orders) ListOrders(others ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{
+func (o Orders) ListOrders(others ...mws.Parameters) (*mws.Response, error) {
+	op := mws.OptionalParams([]string{
 		"CreatedAfter", "CreatedBefore",
 		"LastUpdatedAfter", "LastUpdatedBefore",
 		"OrderStatus", "FulfillmentChannel", "PaymentMethod",
 		"SellerOrderId", "BuyerEmail",
 		"TFMShipmentStatus", "MaxResultsPerPage",
 	}, others)
-	params := gmws.Parameters{
+	params := mws.Parameters{
 		"Action":        "ListOrders",
 		"MarketplaceId": []string{o.MarketPlaceId},
 	}.Merge(op)
@@ -108,8 +107,8 @@ func (o Orders) ListOrders(others ...gmws.Parameters) *mwsHttps.Response {
 
 // ListOrdersByNextToken Returns the next page of orders using the NextToken parameter.
 // http://docs.developer.amazonservices.com/en_US/orders/2013-09-01/Orders_ListOrdersByNextToken.html
-func (o Orders) ListOrdersByNextToken(nextToken string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (o Orders) ListOrdersByNextToken(nextToken string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":    "ListOrdersByNextToken",
 		"NextToken": nextToken,
 	}
@@ -120,8 +119,8 @@ func (o Orders) ListOrdersByNextToken(nextToken string) *mwsHttps.Response {
 // GetOrder Returns orders based on the AmazonOrderId values that you specify.
 // Maximum 50 ids.
 // http://docs.developer.amazonservices.com/en_US/orders/2013-09-01/Orders_GetOrder.html
-func (o Orders) GetOrder(amazonOrderIds []string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (o Orders) GetOrder(amazonOrderIds []string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetOrder",
 		"AmazonOrderId": amazonOrderIds,
 	}
@@ -132,8 +131,8 @@ func (o Orders) GetOrder(amazonOrderIds []string) *mwsHttps.Response {
 
 // ListOrderItems Returns order items based on the AmazonOrderId that you specify.
 // http://docs.developer.amazonservices.com/en_US/orders/2013-09-01/Orders_ListOrderItems.html
-func (o Orders) ListOrderItems(amazonOrderID string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (o Orders) ListOrderItems(amazonOrderID string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "ListOrderItems",
 		"AmazonOrderId": amazonOrderID,
 	}
@@ -143,8 +142,8 @@ func (o Orders) ListOrderItems(amazonOrderID string) *mwsHttps.Response {
 
 // ListOrderItemsByNextToken Returns the next page of order items using the NextToken parameter.
 // http://docs.developer.amazonservices.com/en_US/orders/2013-09-01/Orders_ListOrderItemsByNextToken.html
-func (o Orders) ListOrderItemsByNextToken(nextToken string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (o Orders) ListOrderItemsByNextToken(nextToken string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":    "ListOrderItemsByNextToken",
 		"NextToken": nextToken,
 	}

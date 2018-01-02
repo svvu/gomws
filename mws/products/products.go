@@ -3,23 +3,22 @@ package products
 // Reference http://docs.developer.amazonservices.com/en_US/products/Products_Overview.html
 
 import (
-	"github.com/svvu/gomws/gmws"
-	"github.com/svvu/gomws/mwsHttps"
+	"github.com/svvu/gomws/mws"
 )
 
 // Products is the client for the api
 type Products struct {
-	*gmws.MwsBase
+	*mws.Client
 }
 
 // NewClient generate a new product client
-func NewClient(config gmws.MwsConfig) (*Products, error) {
+func NewClient(config mws.Config) (*Products, error) {
 	prodcuts := new(Products)
-	base, err := gmws.NewMwsBase(config, prodcuts.Version(), prodcuts.Name())
+	base, err := mws.NewClient(config, prodcuts.Version(), prodcuts.Name())
 	if err != nil {
 		return nil, err
 	}
-	prodcuts.MwsBase = base
+	prodcuts.Client = base
 	return prodcuts, nil
 }
 
@@ -35,8 +34,8 @@ func (p Products) Name() string {
 
 // GetServiceStatus Returns the operational status of the Products API section.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetServiceStatus.html
-func (p Products) GetServiceStatus() *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetServiceStatus() (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action": "GetServiceStatus",
 	}
 	return p.SendRequest(params)
@@ -46,9 +45,9 @@ func (p Products) GetServiceStatus() *mwsHttps.Response {
 // Optional Parameters:
 // 	QueryContextId - string
 // http://docs.developer.amazonservices.com/en_US/products/Products_ListMatchingProducts.html
-func (p Products) ListMatchingProducts(query string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"QueryContextId"}, optional)
-	params := gmws.Parameters{
+func (p Products) ListMatchingProducts(query string, optional ...mws.Parameters) (*mws.Response, error) {
+	op := mws.OptionalParams([]string{"QueryContextId"}, optional)
+	params := mws.Parameters{
 		"Action":        "ListMatchingProducts",
 		"Query":         query,
 		"MarketplaceId": p.MarketPlaceId,
@@ -59,8 +58,8 @@ func (p Products) ListMatchingProducts(query string, optional ...gmws.Parameters
 
 // GetMatchingProduct Returns a list of products and their attributes, based on a list of ASIN values.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMatchingProduct.html
-func (p Products) GetMatchingProduct(asinList []string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetMatchingProduct(asinList []string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetMatchingProduct",
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -72,8 +71,8 @@ func (p Products) GetMatchingProduct(asinList []string) *mwsHttps.Response {
 
 // GetMatchingProductForId Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMatchingProductForId.html
-func (p Products) GetMatchingProductForId(idType string, idList []string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetMatchingProductForId(idType string, idList []string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetMatchingProductForId",
 		"IdType":        idType,
 		"IdList":        idList,
@@ -86,8 +85,8 @@ func (p Products) GetMatchingProductForId(idType string, idList []string) *mwsHt
 
 // GetCompetitivePricingForSKU Returns the current competitive price of a product, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetCompetitivePricingForSKU.html
-func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetCompetitivePricingForSKU",
 		"SellerSKUList": sellerSKUList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -99,8 +98,8 @@ func (p Products) GetCompetitivePricingForSKU(sellerSKUList []string) *mwsHttps.
 
 // GetCompetitivePricingForASIN Returns the current competitive price of a product, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetCompetitivePricingForASIN.html
-func (p Products) GetCompetitivePricingForASIN(asinList []string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetCompetitivePricingForASIN(asinList []string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetCompetitivePricingForASIN",
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -115,9 +114,9 @@ func (p Products) GetCompetitivePricingForASIN(asinList []string) *mwsHttps.Resp
 // 	ItemCondition - string
 // 	ExcludeMe - bool
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestOfferListingsForSKU.html
-func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"ItemCondition", "ExcludeMe"}, optional)
-	params := gmws.Parameters{
+func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional ...mws.Parameters) (*mws.Response, error) {
+	op := mws.OptionalParams([]string{"ItemCondition", "ExcludeMe"}, optional)
+	params := mws.Parameters{
 		"Action":        "GetLowestOfferListingsForSKU",
 		"SellerSKUList": sellerSKUList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -132,9 +131,9 @@ func (p Products) GetLowestOfferListingsForSKU(sellerSKUList []string, optional 
 // 	ItemCondition - string
 // 	ExcludeMe - bool
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestOfferListingsForASIN.html
-func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"ItemCondition", "ExcludeMe"}, optional)
-	params := gmws.Parameters{
+func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...mws.Parameters) (*mws.Response, error) {
+	op := mws.OptionalParams([]string{"ItemCondition", "ExcludeMe"}, optional)
+	params := mws.Parameters{
 		"Action":        "GetLowestOfferListingsForASIN",
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -146,8 +145,8 @@ func (p Products) GetLowestOfferListingsForASIN(asinList []string, optional ...g
 
 // GetLowestPricedOffersForSKU Returns lowest priced offers for a single product, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestPricedOffersForSKU.html
-func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetLowestPricedOffersForSKU",
 		"SellerSKU":     sellerSKU,
 		"ItemCondition": itemCondition,
@@ -159,8 +158,8 @@ func (p Products) GetLowestPricedOffersForSKU(sellerSKU, itemCondition string) *
 
 // GetLowestPricedOffersForASIN Returns lowest priced offers for a single product, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetLowestPricedOffersForASIN.html
-func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetLowestPricedOffersForASIN",
 		"ASIN":          asin,
 		"ItemCondition": itemCondition,
@@ -172,9 +171,9 @@ func (p Products) GetLowestPricedOffersForASIN(asin, itemCondition string) *mwsH
 
 // GetMyPriceForSKU Returns pricing information for your own offer listings, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForSKU.html
-func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"ItemCondition"}, optional)
-	params := gmws.Parameters{
+func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...mws.Parameters) (*mws.Response, error) {
+	op := mws.OptionalParams([]string{"ItemCondition"}, optional)
+	params := mws.Parameters{
 		"Action":        "GetMyPriceForSKU",
 		"SellerSKUList": sellerSKUList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -186,9 +185,9 @@ func (p Products) GetMyPriceForSKU(sellerSKUList []string, optional ...gmws.Para
 
 // GetMyPriceForASIN Returns pricing information for your own offer listings, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetMyPriceForASIN.html
-func (p Products) GetMyPriceForASIN(asinList []string, optional ...gmws.Parameters) *mwsHttps.Response {
-	op := gmws.OptionalParams([]string{"ItemCondition"}, optional)
-	params := gmws.Parameters{
+func (p Products) GetMyPriceForASIN(asinList []string, optional ...mws.Parameters) (*mws.Response, error) {
+	op := mws.OptionalParams([]string{"ItemCondition"}, optional)
+	params := mws.Parameters{
 		"Action":        "GetMyPriceForASIN",
 		"ASINList":      asinList,
 		"MarketplaceId": p.MarketPlaceId,
@@ -200,8 +199,8 @@ func (p Products) GetMyPriceForASIN(asinList []string, optional ...gmws.Paramete
 
 // GetProductCategoriesForSKU Returns the parent product categories that a product belongs to, based on SellerSKU.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetProductCategoriesForSKU.html
-func (p Products) GetProductCategoriesForSKU(sellerSKU string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetProductCategoriesForSKU(sellerSKU string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetProductCategoriesForSKU",
 		"SellerSKU":     sellerSKU,
 		"MarketplaceId": p.MarketPlaceId,
@@ -212,8 +211,8 @@ func (p Products) GetProductCategoriesForSKU(sellerSKU string) *mwsHttps.Respons
 
 // GetProductCategoriesForASIN Returns the parent product categories that a product belongs to, based on ASIN.
 // http://docs.developer.amazonservices.com/en_US/products/Products_GetProductCategoriesForASIN.html
-func (p Products) GetProductCategoriesForASIN(asin string) *mwsHttps.Response {
-	params := gmws.Parameters{
+func (p Products) GetProductCategoriesForASIN(asin string) (*mws.Response, error) {
+	params := mws.Parameters{
 		"Action":        "GetProductCategoriesForASIN",
 		"ASIN":          asin,
 		"MarketplaceId": p.MarketPlaceId,
