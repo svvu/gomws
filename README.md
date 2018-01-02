@@ -9,7 +9,7 @@ Example usage can be found in main.go
 Import the packages
 ```go
 import(
-  "github.com/svvu/gomws/gmws"
+  "github.com/svvu/gomws/mws"
   "github.com/svvu/gomws/mws/products"
 )
 ```
@@ -35,13 +35,16 @@ productsClient, err := products.NewClient(config)
 Call the operations, the response is a struct contains result xml string and error if operation fail
 ```go
 fmt.Println("------GetMatchingProduct------")
-response := productsClient.GetMatchingProduct([]string{"ASIN"})
-// Check whether or not the response return 200.
-if response.Error != nil {
-	fmt.Println(response.Error.Error())
+response, err := productsClient.GetMatchingProduct([]string{"ASIN"})
+// Check http error.
+if err != nil {
+  fmt.Println(err.Error())
 }
-// result() is xml response in string
-fmt.Println(response.Result())
+defer response.Body.Close()
+// Check whether or not the response return MWS errors.
+if response.Error != nil {
+  fmt.Println(response.Error.Error())
+}
 ```
 
 Use XMLNode parser to get the data from response.
@@ -66,37 +69,31 @@ Create the xmlNode parser.
       "#text": "This will become node also.",
     }
 */
-xmlNode, err = gmws.GenerateXMLNode(response.Body)
-```
-Check whether or not API send back error message
-```go
-if gmws.HasErrors(xmlNode) {
-  fmt.Println(gmws.GetErrors(xmlNode))
-}
+parser, err := response.ResultParser()
 ```
 View the response in xml format.
 ```go
-xmlNode.PrintXML()
+parser.PrintXML()
 ```
 Get the data by key (xml tag name)
 ```go
 // products is a slice of XMLNode, means individual one can be used to retrieve
 // data by methods provided by XMLNode, ex: FindByKey
-products := xmlNode.FindByKey("Product")
+products := parser.FindByKey("Product")
 ```
 Many methods can be used to traverse the xml tree. For more info, refer to the [godoc](https://godoc.org/github.com/svvu/gomws/gmws)
 ```go
 // FindByKey get the nodes in any place of the tree.
-productNodes := xmlNode.FindByKey("Product")
+productNodes := parser.FindByKey("Product")
 
 // FindByKeys can used to retrieve nodes which are children of other nodes.
-productNameNodes := xmlNode.FindByKeys("Product", "Title")
+productNameNodes := parser.FindByKeys("Product", "Title")
 
 // FindByPath get the nodes with specify tree path.
 // Keys in the path are separated by '.'.
 // Note: the first key must be a direct child of current node, and each subsequential
 //  key must be direct child of previous key.
-productNameNodes := xmlNode.FindByKeys("Product.AttributeSets.ItemAttributes.Title")
+productNameNodes := parser.FindByPath("Product.AttributeSets.ItemAttributes.Title")
 ```
 To get the value out of node, use the corresponding type methods
 ```go
@@ -107,7 +104,7 @@ xmlNode.ToBool()
 xmlNode.ToTime()
 
 // Ex:
-productNameNodes := xmlNode.FindByKeys("Product", "Title")
+productNameNodes := parser.FindByKeys("Product", "Title")
 name, err := productNameNodes[0].ToString()
 ```
 To unmarshall the data to a struct, use method
@@ -124,10 +121,10 @@ The struct use json format tags.
 //  </Message>
 // Can use struct:
 msg := struct {
-		Locale string `json:"Locale"`
-		Text   string `json:"Text"`
+  Locale string `json:"Locale"`
+  Text   string `json:"Text"`
 }{}
-err := xmlNode.FindByKey("Message")[0].ToStruct(&msg)
+err := parser.FindByKey("Message")[0].ToStruct(&msg)
 
 // To unmarshal the attributes, use -attributeName tag.
 // To unmarshal the value of tags with attributes, use #text tag.
@@ -143,7 +140,7 @@ type msgID struct {
   ID            string `json:"#text"`
 }
 msgid := msgID{}
-err := xmlNode.FindByKey("MessageId")[0].ToStruct(&msgid)
+err := parser.FindByKey("MessageId")[0].ToStruct(&msgid)
 ```
 
 Other usefull methods
@@ -175,13 +172,3 @@ The Orders API returns orders list, items info in the order, and a variety of ot
 # TODO
 * Add support for other APIs
 * Record api request to test the endpoint methods
-
-# Deprecated
-The build in structs to unmarshal the result are deprecated. They still can be found in branch 0.0.3.
-
-Reasons to remove the support the build structs:
-1.  Make the code eaiser to maintain and eaiser for adding support for new API.
-2.  Make the code more flexiable and error tolerance.
-3.  Make the access to part of the result eaiser. Ex: to get the package width of the GetMatchingProduct response
-  * With old style: response.GetMatchingProductResult.Product.AttributeSets.PackageDimensions.Width
-  * With new style: response.FindByKeys("PackageDimensions", "Width")
