@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -44,6 +45,17 @@ func (resp *Response) WriteBodyTo(out io.Writer) error {
 	}
 
 	return nil
+}
+
+// ExportTo export the body to a file with path.
+func (resp *Response) ExportTo(path string) error {
+	out, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	return resp.WriteBodyTo(out)
 }
 
 // Close make sure the body drained, and then close the connection to make the
