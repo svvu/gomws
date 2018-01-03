@@ -56,10 +56,6 @@ func NewClient(config Config, version, name string) (*Client, error) {
 		return nil, fmt.Errorf("No seller id provided")
 	}
 
-	if config.AuthToken == "" {
-		return nil, fmt.Errorf("No auth token provided")
-	}
-
 	region := config.Region
 	if region == "" {
 		region = "US"
@@ -163,7 +159,9 @@ func (base Client) buildRequest(structuredParams Parameters) (*http.Request, err
 func (base Client) signQuery(params Values) Values {
 	// Add client info to the query params.
 	params.Set("SellerId", base.SellerId)
-	params.Set("MWSAuthToken", base.AuthToken)
+	if base.AuthToken != "" {
+		params.Set("MWSAuthToken", base.AuthToken)
+	}
 	params.Set("SignatureMethod", base.SignatureMethod())
 	params.Set("SignatureVersion", base.SignatureVersion())
 	params.Set("AWSAccessKeyId", base.accessKey)

@@ -111,13 +111,16 @@ func TestNewClient(t *testing.T) {
 
 		client, err := NewClient(tconfig, "V1", "Test")
 
-		Convey("Nil Client returned", func() {
-			So(client, ShouldBeNil)
+		Convey("no error return", func() {
+			So(err, ShouldBeNil)
 		})
 
-		Convey("Auth token error returned", func() {
-			So(err, ShouldNotBeNil)
-			So(err.Error(), ShouldEqual, "No auth token provided")
+		Convey("Client returned", func() {
+			So(client, ShouldNotBeNil)
+		})
+
+		Convey("Auth token is empty", func() {
+			So(client.AuthToken, ShouldEqual, "")
 		})
 	})
 
@@ -313,9 +316,9 @@ func TestClient_buildRequest(t *testing.T) {
 
 	Convey("When create request error", t, func() {
 		client, _ := NewClient(testConfig(), testVersion, testClientName)
-		client.Host = "bad host"
+		p := Parameters{"bad_params": []interface{}{}}
 
-		request, err := client.buildRequest(testParams.params)
+		request, err := client.buildRequest(p)
 
 		Convey("Error retuened", func() {
 			So(err, ShouldNotBeNil)
