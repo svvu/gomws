@@ -40,7 +40,10 @@ response, err := productsClient.GetMatchingProduct([]string{"ASIN"})
 if err != nil {
   fmt.Println(err.Error())
 }
-defer response.Body.Close()
+// Make sure the body is drained and closed, so the connection can be reuse.
+// Response is a wrapper over http response, all operations available to http
+// response will works.
+defer response.Close()
 // Check whether or not the response return MWS errors.
 if response.Error != nil {
   fmt.Println(response.Error.Error())
