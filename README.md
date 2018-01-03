@@ -146,6 +146,14 @@ msgid := msgID{}
 err := parser.FindByKey("MessageId")[0].ToStruct(&msgid)
 ```
 
+Write the response to file (mainly for export report to file)
+```go
+err = getReportResponse.ExportTo("./output.txt")
+if err != nil {
+  fmt.Println(err)
+}
+```
+
 Other usefull methods
 ```go
 // Get the current tag name of the node.
