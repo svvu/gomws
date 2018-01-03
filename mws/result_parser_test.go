@@ -1,4 +1,4 @@
-package gmws
+package mws
 
 import (
 	"fmt"
@@ -8,8 +8,34 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func ErrorTestExample() []byte {
-	response, ferr := ioutil.ReadFile("./examples/ErrorResponse.xml")
+func TestNewResultParser(t *testing.T) {
+	Convey("when create XML parser fail", t, func() {
+		rp, err := NewResultParser([]byte(""))
+
+		Convey("return nil ResultParser", func() {
+			So(rp, ShouldBeNil)
+		})
+
+		Convey("return error", func() {
+			So(err, ShouldNotBeNil)
+		})
+	})
+
+	Convey("when create XML parser success", t, func() {
+		rp, err := NewResultParser([]byte("<foo>bar</foo>"))
+
+		Convey("return created ResultParser", func() {
+			So(rp, ShouldNotBeNil)
+		})
+
+		Convey("return no error", func() {
+			So(err, ShouldBeNil)
+		})
+	})
+}
+
+func errorTestExample() []byte {
+	response, ferr := ioutil.ReadFile("./exampleResponses/ErrorResponse.xml")
 
 	if ferr != nil {
 		fmt.Println(ferr)
@@ -19,8 +45,8 @@ func ErrorTestExample() []byte {
 	return response
 }
 
-func NoErrorTestExample() []byte {
-	response, ferr := ioutil.ReadFile("./examples/XMLNodeTest.xml")
+func noErrorTestExample() []byte {
+	response, ferr := ioutil.ReadFile("./exampleResponses/NoErrorResponse.xml")
 
 	if ferr != nil {
 		fmt.Println(ferr)
@@ -30,28 +56,28 @@ func NoErrorTestExample() []byte {
 	return response
 }
 
-func TestHasErrors(t *testing.T) {
+func TestResultParser_HasErrorNodes(t *testing.T) {
 	Convey("When response has error", t, func() {
-		xNode, _ := GenerateXMLNode(ErrorTestExample())
+		rp, _ := NewResultParser(errorTestExample())
 
 		Convey("Has error should be true", func() {
-			So(HasErrors(xNode), ShouldBeTrue)
+			So(rp.HasErrorNodes(), ShouldBeTrue)
 		})
 	})
 
 	Convey("When response has no error", t, func() {
-		xNode, _ := GenerateXMLNode(NoErrorTestExample())
+		rp, _ := NewResultParser(noErrorTestExample())
 
 		Convey("Has error should be false", func() {
-			So(HasErrors(xNode), ShouldBeFalse)
+			So(rp.HasErrorNodes(), ShouldBeFalse)
 		})
 	})
 }
 
-func TestGetErrors(t *testing.T) {
+func TestResultParser_GetMWSErrors(t *testing.T) {
 	Convey("When response has error", t, func() {
-		xNode, _ := GenerateXMLNode(ErrorTestExample())
-		errors, _ := GetErrors(xNode)
+		rp, _ := NewResultParser(errorTestExample())
+		errors, _ := rp.GetMWSErrors()
 
 		Convey("Errors should not be blank", func() {
 			So(len(errors), ShouldBeGreaterThan, 0)
@@ -75,8 +101,8 @@ func TestGetErrors(t *testing.T) {
 	})
 
 	Convey("When response has no error", t, func() {
-		xNode, _ := GenerateXMLNode(NoErrorTestExample())
-		errors, _ := GetErrors(xNode)
+		rp, _ := NewResultParser(noErrorTestExample())
+		errors, _ := rp.GetMWSErrors()
 
 		Convey("No errors should returned", func() {
 			So(len(errors), ShouldEqual, 0)

@@ -1,4 +1,4 @@
-package gmws
+package xmlParser
 
 import (
 	"fmt"
@@ -386,13 +386,13 @@ func Test_ToInt(t *testing.T) {
 	})
 }
 
-func Test_ToFloat(t *testing.T) {
+func Test_ToFloat64(t *testing.T) {
 	xNode, _ := GenerateXMLNode(XMLNodeTestExample())
 
 	Convey("Value is a float", t, func() {
 		fNode := xNode.FindByKey("UpHour")
 
-		i, err := fNode[0].ToFloat()
+		i, err := fNode[0].ToFloat64()
 
 		Convey("Error is nil", func() {
 			So(err, ShouldBeNil)
@@ -404,7 +404,7 @@ func Test_ToFloat(t *testing.T) {
 	})
 
 	Convey("Value is not a float", t, func() {
-		i, err := xNode.ToFloat()
+		i, err := xNode.ToFloat64()
 
 		Convey("Error is not nil", func() {
 			So(err, ShouldNotBeNil)

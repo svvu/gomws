@@ -1,9 +1,10 @@
-package gmws
+package xmlParser
 
 import (
 	"errors"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -82,19 +83,15 @@ func (xn *XMLNode) FindByKeys(keys ...string) []XMLNode {
 		return valuesMap
 	}
 
-	lastIndex := len(keys) - 1
-	nodes := xn.FindByKey(keys[lastIndex])
-	keysCheck := keys[0:lastIndex]
+	keysRegexp := regexp.MustCompile(
+		`(^|\.)` + strings.Join(keys, `(\.(\w+\.)*)`) + `($|\.)`,
+	)
 
-NodeLoop:
+	nodes := xn.FindByKey(keys[len(keys)-1])
 	for _, node := range nodes {
-		pathKeys := strings.Split(node.Path, ".")
-		for _, key := range keysCheck {
-			if !stringInSlice(key, pathKeys) {
-				continue NodeLoop
-			}
+		if keysRegexp.MatchString(node.Path) {
+			valuesMap = append(valuesMap, node)
 		}
-		valuesMap = append(valuesMap, node)
 	}
 
 	return valuesMap
@@ -215,7 +212,7 @@ func (xn *XMLNode) ToMap() (mxj.Map, error) {
 		return mxj.Map(xn.Value.(map[string]interface{})), nil
 	}
 
-	return nil, errors.New("Value is not a map.")
+	return nil, errors.New("value is not a map")
 }
 
 // ToString convert the node value to string.
@@ -225,40 +222,58 @@ func (xn *XMLNode) ToString() (string, error) {
 		return xn.Value.(string), nil
 	}
 
-	return "", errors.New("Value is not a valid string.")
+	return "", errors.New("value is not a valid string")
 }
 
 // ToInt convert the node value to int.
 // If value is not valid int, an error will be returned.
 func (xn *XMLNode) ToInt() (int, error) {
-	value, err := xn.ToString()
-	if err != nil {
-		return 0, errors.New("Can not convert value to int.")
+	switch xn.ValueType() {
+	case reflect.String:
+		value, err := xn.ToString()
+		if err != nil {
+			return 0, errors.New("can not convert value to int")
+		}
+		return strconv.Atoi(value)
+	case reflect.Int:
+		return xn.Value.(int), nil
+	default:
+		return 0, errors.New("can not convert value to int")
 	}
-	i, err := strconv.Atoi(value)
-	return i, err
 }
 
-// ToFloat convert the node value to float64.
+// ToFloat64 convert the node value to float64.
 // If value is not valid float64, an error will be returned.
-func (xn *XMLNode) ToFloat() (float64, error) {
-	value, err := xn.ToString()
-	if err != nil {
-		return 0, errors.New("Can not convert value to float64.")
+func (xn *XMLNode) ToFloat64() (float64, error) {
+	switch xn.ValueType() {
+	case reflect.String:
+		value, err := xn.ToString()
+		if err != nil {
+			return 0.0, errors.New("can not convert value to float64")
+		}
+		return strconv.ParseFloat(value, 64)
+	case reflect.Float64:
+		return xn.Value.(float64), nil
+	default:
+		return 0.0, errors.New("can not convert value to float64")
 	}
-	f, err := strconv.ParseFloat(value, 64)
-	return f, err
 }
 
 // ToBool convert the node value to bool.
 // If value is not valid bool, an error will be returned.
 func (xn *XMLNode) ToBool() (bool, error) {
-	value, err := xn.ToString()
-	if err != nil {
-		return false, errors.New("Can not convert value to bool.")
+	switch xn.ValueType() {
+	case reflect.String:
+		value, err := xn.ToString()
+		if err != nil {
+			return false, errors.New("can not convert value to bool")
+		}
+		return strconv.ParseBool(value)
+	case reflect.Bool:
+		return xn.Value.(bool), nil
+	default:
+		return false, errors.New("can not convert value to bool")
 	}
-	b, err := strconv.ParseBool(value)
-	return b, err
 }
 
 // ToTime convert the node value to timestamp.
@@ -266,7 +281,7 @@ func (xn *XMLNode) ToBool() (bool, error) {
 func (xn *XMLNode) ToTime() (time.Time, error) {
 	value, err := xn.ToString()
 	if err != nil {
-		return time.Time{}, errors.New("Can not convert value to time.")
+		return time.Time{}, errors.New("can not convert value to time")
 	}
 	t, err := time.Parse(time.RFC3339, value)
 	return t, err
@@ -291,7 +306,7 @@ Can use struct:
 func (xn *XMLNode) ToStruct(structPtr interface{}) error {
 	xmap, err := xn.ToMap()
 	if err != nil {
-		return errors.New("Value can not be unmarshal to struct.")
+		return errors.New("value can not be unmarshal to struct")
 	}
 	return xmap.Struct(structPtr)
 }

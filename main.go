@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/svvu/gomws/gmws"
+	"github.com/svvu/gomws/mws"
 	"github.com/svvu/gomws/mws/products"
 )
 
 func main() {
-	config := gmws.MwsConfig{
+	config := mws.Config{
 		SellerId:  "SellerId",
 		AuthToken: "AuthToken",
 		Region:    "US",
@@ -23,30 +23,39 @@ func main() {
 		return
 	}
 
+	// Example 1
 	fmt.Println("------GetServiceStatus------")
-	response := productsClient.GetServiceStatus()
-	if response.Error != nil {
-		fmt.Println(response.Error.Error())
+	statusResponse, err := productsClient.GetServiceStatus()
+	// Check http client error.
+	if err != nil {
+		fmt.Println(err.Error())
 	}
-	xmlNode, _ := gmws.GenerateXMLNode(response.Body)
-	// Print the xml response with indention.
-	xmlNode.PrintXML()
+	defer statusResponse.Body.Close()
+	// Check whether or not the API return errors.
+	if statusResponse.Error != nil {
+		fmt.Println(statusResponse.Error.Error())
+	} else {
+		xmlNode, _ := statusResponse.ResultParser()
+		xmlNode.PrintXML() // Print the xml response with indention.
+	}
 
+	// Example 2
 	fmt.Println("------GetMatchingProduct------")
-	response = productsClient.GetMatchingProduct([]string{"B00ON8R5EO", "B000EVOSE4"})
-	// Check http response error
-	if response.Error != nil {
-		fmt.Println(response.Error.Error())
+	proResponse, err := productsClient.GetMatchingProduct([]string{"B00ON8R5EO", "B000EVOSE4"})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer proResponse.Body.Close()
+	if proResponse.Error != nil {
+		fmt.Println(proResponse.Error.Error())
+		return
 	}
 
-	xmlNode, _ = gmws.GenerateXMLNode(response.Body)
-	// Check whether or not API send back error message
-	if gmws.HasErrors(xmlNode) {
-		fmt.Println(gmws.GetErrors(xmlNode))
-	}
+	// Create a result parser for the response.
+	parser, _ := proResponse.ResultParser()
 
 	// Get the first product from response.
-	productOne := xmlNode.FindByKey("Product")[0]
+	productOne := parser.FindByKey("Product")[0]
 
 	// Find the title node.
 	productNameNode := productOne.FindByKey("Title")
@@ -60,5 +69,5 @@ func main() {
 	// Find the height for package dimensions.
 	heightNode := productOne.FindByKeys("PackageDimensions", "Height")
 	// Inspect the heightNode map.
-	gmws.Inspect(heightNode)
+	mws.Inspect(heightNode)
 }
