@@ -5,6 +5,7 @@ import (
 
 	"github.com/svvu/gomws/mws"
 	"github.com/svvu/gomws/mws/products"
+	"github.com/svvu/gomws/mws/reports"
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	defer statusResponse.Body.Close()
+	defer statusResponse.Close()
 	// Check whether or not the API return errors.
 	if statusResponse.Error != nil {
 		fmt.Println(statusResponse.Error.Error())
@@ -45,7 +46,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	defer proResponse.Body.Close()
+	defer proResponse.Close()
 	if proResponse.Error != nil {
 		fmt.Println(proResponse.Error.Error())
 		return
@@ -70,4 +71,23 @@ func main() {
 	heightNode := productOne.FindByKeys("PackageDimensions", "Height")
 	// Inspect the heightNode map.
 	mws.Inspect(heightNode)
+
+	// Example 3
+	fmt.Println("------GetReport------")
+	reportClient, err := reports.NewClient(config)
+	rpResponse, err := reportClient.GetReport("Report-ID")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer rpResponse.Close()
+	if rpResponse.Error != nil {
+		fmt.Println(rpResponse.Error.Error())
+		return
+	}
+
+	// Write report to file.
+	err = rpResponse.ExportTo("./output.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
 }
